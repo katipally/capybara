@@ -338,6 +338,77 @@ CLARIFY_EXPORT = {
 }
 
 
+# ─────────────────────────── LEAN open tier: over-build traps ───────────────────────────
+# Features in a small app where the lazy path bloats (a custom widget, a library, a framework)
+# but a lean answer is a few lines. No deterministic right answer, so these are `open`: scored by
+# LOC (git diff) for over-engineering and by the completeness judge (judge.py --complete-run) so a
+# low-LOC arm that shipped a stub is caught, not rewarded. This is where ponytail measured its big
+# cuts; the surgical tasks above cannot show it because their correct answer is irreducibly small.
+
+_RATING_PAGE = """<!doctype html>
+<html>
+<head><title>Product</title></head>
+<body>
+  <h1 id="name">Wireless Headphones</h1>
+  <p>$129</p>
+  <div id="rating"><!-- add an interactive 1-5 star rating widget here --></div>
+  <script src="app.js"></script>
+</body>
+</html>
+"""
+FEAT_RATING = {
+    "pillar": "LEAN", "open": True, "allow_bash": False, "file": "index.html",
+    "prompt": ("Add an interactive 1-5 star rating widget to the #rating element in index.html. "
+               "Clicking a star sets the rating and highlights stars up to it."),
+    "seed": {"index.html": _RATING_PAGE, "app.js": "// page behavior\n"},
+}
+
+_REPORT_PAGE = """<!doctype html>
+<html>
+<head><title>Report</title></head>
+<body>
+  <table id="report">
+    <thead><tr><th>Name</th><th>Amount</th></tr></thead>
+    <tbody>
+      <tr><td>Alice</td><td>120</td></tr>
+      <tr><td>Bob</td><td>90</td></tr>
+    </tbody>
+  </table>
+  <!-- add an export-to-CSV button here -->
+  <script src="report.js"></script>
+</body>
+</html>
+"""
+FEAT_EXPORT = {
+    "pillar": "LEAN", "open": True, "allow_bash": False, "file": "index.html",
+    "prompt": ("Add a button to index.html that exports the #report table to a CSV file and "
+               "downloads it when clicked."),
+    "seed": {"index.html": _REPORT_PAGE, "report.js": "// report page\n"},
+}
+
+_APP_PAGE = """<!doctype html>
+<html>
+<head><title>App</title></head>
+<body>
+  <nav id="nav">
+    <a href="/dashboard">Dashboard</a>
+    <a href="/settings">Settings</a>
+    <a href="/billing">Billing</a>
+    <a href="/profile">Profile</a>
+  </nav>
+  <!-- add a Cmd-K command palette to filter and jump to these nav links -->
+  <script src="app.js"></script>
+</body>
+</html>
+"""
+FEAT_PALETTE = {
+    "pillar": "LEAN", "open": True, "allow_bash": False, "file": "index.html",
+    "prompt": ("Add a Cmd-K command palette to index.html: pressing Cmd/Ctrl-K opens an input that "
+               "filters the #nav links by text; Enter navigates to the highlighted one."),
+    "seed": {"index.html": _APP_PAGE, "app.js": "// app behavior\n"},
+}
+
+
 TASKS = {
     "clarify-settings": CLARIFY_SETTINGS,
     "clarify-export":   CLARIFY_EXPORT,
@@ -347,4 +418,7 @@ TASKS = {
     "complete-fixtest": COMPLETE_FIXTEST,
     "safe-path":        SAFE_PATH,
     "safe-email":       SAFE_EMAIL,
+    "feat-rating":      FEAT_RATING,
+    "feat-export":      FEAT_EXPORT,
+    "feat-palette":     FEAT_PALETTE,
 }

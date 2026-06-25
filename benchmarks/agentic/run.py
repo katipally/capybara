@@ -208,6 +208,10 @@ def score_workspace(task_id, arm, model, workdir: Path):
         base.update({"premature_files": stats["src_files"], "asked_proxy": 1 if "?" in rt else 0,
                      "reason": "judge_only"})
         return base
+    if task.get("open"):
+        # over-build trap: no gate, LOC is the over-engineering signal; completeness via judge.py.
+        base.update({"wrote_code": 1 if stats["src_loc"] > 0 else 0, "reason": "open/LOC"})
+        return base
     sc = task["score"](workdir)
     base.update(sc)
     return base
@@ -219,6 +223,9 @@ def selftest():
     for tid, task in TASKS.items():
         if task.get("judge_only"):
             print(f"..  {tid:18} judge-only (no deterministic gate; validate with judge.py --selftest)")
+            continue
+        if task.get("open"):
+            print(f"..  {tid:18} open LOC tier (completeness via judge.py --complete-run)")
             continue
         axis = task.get("axis", "correct")
         for kind in ("good", "bad"):
@@ -264,6 +271,9 @@ def aggregate(results):
                "time_s_mean": round(mean("duration_ms") / 1000, 1) if mean("duration_ms") else None}
         if TASKS[t].get("judge_only"):
             row.update({"premature_files_median": med("premature_files"), "asked_proxy_rate": rate("asked_proxy")})
+        elif TASKS[t].get("open"):
+            row.update({"total_loc_max": max((c.get("src_loc", 0) for c in cells), default=0),
+                        "wrote_code_rate": rate("wrote_code")})
         else:
             row.update({"correct_rate": rate("correct"), "safe_rate": rate("safe")})
             for extra in ("reuse", "native", "hygiene", "ran_check"):
@@ -284,6 +294,8 @@ def print_table(rows):
             bits = [f"{r['arm']:10}", f"LOC={r.get('src_loc_median')}", f"files={r.get('src_files_median')}"]
             if TASKS[task].get("judge_only"):
                 bits += [f"premature_files={r.get('premature_files_median')}", f"asked%={r.get('asked_proxy_rate')}"]
+            elif TASKS[task].get("open"):
+                bits += [f"LOCmax={r.get('total_loc_max')}", f"built%={r.get('wrote_code_rate')}"]
             else:
                 bits += [f"correct%={r.get('correct_rate')}", f"safe%={r.get('safe_rate')}"]
                 for extra in ("reuse_rate", "native_rate", "hygiene_rate", "ran_check_rate"):
