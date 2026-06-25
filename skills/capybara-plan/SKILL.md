@@ -6,34 +6,46 @@ allowed-tools: Read, Grep, Glob, WebSearch, WebFetch
 license: MIT
 ---
 
-# Capybara Plan — CLARIFY before code
+# Capybara Plan — understand, then clarify, then build
 
-The flagship. A complete, minimal spec beats a fast wrong one. But stay
-**proportional**: a one-line change does NOT need this — just do it. Run this flow
-for features, multi-file changes, or anything ambiguous.
+The flagship, and the thesis of capybara: **understand before you act.** A
+complete, future-proof spec beats a fast wrong one — and a real root-cause
+implementation beats a patchwork. Stay **proportional**: a one-line change does
+NOT need this. Run the full flow for features, multi-file changes, refactors, or
+anything ambiguous.
 
 ## Flow
 
-1. **Read first.** Explore read-only. Find existing code/patterns/utilities to
-   reuse (LEAN) before proposing anything new. Trace the real flow end to end.
+1. **Understand & research FIRST — before any question.** Read the prompt closely.
+   Gather real context, learn the codebase, trace the actual flow end to end, and
+   research/explore (read-only). Find existing code, patterns, and utilities to
+   reuse (LEAN). Questions asked before this step are generic noise; questions
+   asked after it are curated and worth the user's time.
 
-2. **Diagram it.** Show your understanding as a small ASCII diagram — architecture,
-   data flow, or state. Make the user's mental model and yours match before deciding.
+2. **Diagram your understanding.** Show it as an ASCII diagram — architecture, data
+   flow, or state — so your model and the user's match before any decision.
    ```
    [user] -> (validate) -> [store] -> (notify)
    ```
 
-3. **Ask, batched.** Use AskUserQuestion: **3-4 grouped questions per round, 1-3
-   rounds**. Explain each tradeoff so the user can actually decide. Don't ask what
-   the code or a sensible default already answers (ECONOMY). Recommend an option.
+3. **Ask curated questions — as many as the requirement needs.** No fixed quota:
+   it might be one question, it might be a dozen. Ask everything needed to clarify
+   the spec fully; don't stop short and don't pad. Each question is grounded in what
+   your exploration surfaced (AskUserQuestion caps at 4 per round — loop rounds
+   until it's genuinely clear). **Put an ASCII diagram/sketch in (almost) every
+   question** to make the options concrete and easy to understand — omit it only
+   when a diagram would truly add nothing. Give the user the best option(s) up
+   front — optimal and future-sighted — with tradeoffs and a recommendation. Never
+   ask what the code or a sensible default already answers (ECONOMY).
 
 4. **Edge cases, explicit.** List them and confirm handling: empty/null, huge
    input, concurrent access, failure/retry, auth/permission, malformed input,
-   the boundary values. Naming the edge case is half the fix.
+   boundary values. Naming the edge case is half the fix.
 
-5. **Spec, minimal.** Write the recommended approach only — not every alternative.
-   Name the files to touch and the existing functions to reuse. Then climb the LEAN
-   ladder to implement, and finish with the COMPLETE done-gate (see capybara-done).
+5. **Spec → real implementation.** Write the recommended approach only — name the
+   files to touch and the existing functions to reuse. Climb the LEAN ladder and
+   implement the proper root fix, not a patch over the symptom. Finish with the
+   COMPLETE done-gate (see capybara-done).
 
-Output the plan terse and scannable. No filler. If a question has a clear default,
-take it and say so in one line rather than asking.
+Output terse and scannable. No filler. If a question has a clear default, take it
+and say so in one line rather than asking.

@@ -43,9 +43,13 @@ Then it writes the smallest thing that answers your actual answers — and runs 
 
 ## The six pillars
 
+> **The capybara way:** understand the prompt → gather real context → learn the
+> codebase → research & explore → *then* ask curated questions (with ASCII) → propose
+> the best, future-proof option → implement the real root-cause fix. **Never patchwork.**
+
 | Pillar | What it enforces |
 |--------|------------------|
-| **CLARIFY** | Before non-trivial code: a quick ASCII diagram, 3–4 grouped questions, explicit edge cases. Don't guess the spec. |
+| **CLARIFY** | Understand and explore *first*, then ask — as many curated questions as the requirement actually needs (one or a dozen, never a fixed quota), an ASCII sketch in nearly every one, explicit edge cases. Don't guess the spec. |
 | **LEAN** | YAGNI ladder — does it need to exist? reuse what's here? stdlib? native? one line? *then* minimal code. |
 | **OPTIMAL** | Right data structure, best feasible time/space, no needless O(n²). |
 | **ECONOMY** | Terse output, no useless comments or filler, minimal tokens, no over-exploring. |
