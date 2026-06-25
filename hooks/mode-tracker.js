@@ -2,7 +2,7 @@
 // UserPromptSubmit: catch "/capybara <level>" and "stop capybara" to switch state.
 'use strict';
 
-const { parseCommand, isDeactivation, setLevel } = require('./config.js');
+const { parseCommand, isDeactivation, setLevel, writeHookOutput } = require('./config.js');
 
 let input = '';
 process.stdin.on('data', (c) => (input += c));
@@ -12,12 +12,12 @@ process.stdin.on('end', () => {
 
   if (isDeactivation(prompt)) {
     setLevel('off');
-    process.stdout.write('[capybara] off. Say "capybara medium" to re-enable.');
+    writeHookOutput('UserPromptSubmit', '[capybara] off. Say "capybara medium" to re-enable.');
   } else {
     const lvl = parseCommand(prompt);
     if (lvl) {
       setLevel(lvl);
-      process.stdout.write(lvl === 'off' ? '[capybara] off.' : `[capybara] level: ${lvl}.`);
+      writeHookOutput('UserPromptSubmit', lvl === 'off' ? '[capybara] off.' : `[capybara] level: ${lvl}.`);
     }
   }
   process.exit(0);

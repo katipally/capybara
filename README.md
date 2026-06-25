@@ -110,19 +110,18 @@ The level shows in your statusline as `[CAPYBARA]` / `[CAPYBARA:HIGH]`. Set a de
 
 ## Commands
 
+**The six pillars are always on — there's no command to run them.** Once
+installed, capybara applies to every task automatically: it clarifies before
+non-trivial code, stays lean, writes optimal and terse code, finishes terminally,
+and cleans up. The only two slash commands control intensity and show help:
+
 | Command | What it does |
 |---------|--------------|
-| `/capybara [low \| medium \| high \| off]` | Set the intensity, or turn it off. No argument reports the current level. |
-| `/capybara:plan` | Clarify before code: ASCII diagram, curated questions, edge cases, minimal spec. |
-| `/capybara:review` | Review the current diff against the six pillars — what to delete, optimize, clean. |
-| `/capybara:clean` | Hygiene pass on what you touched: dead code, stale comments, sanitize, flag security. |
-| `/capybara:done` | The done-gate: checklist + actually run the test/build before claiming done. |
-| `/capybara:help` | Quick reference card. |
+| `/capybara [low \| medium \| high \| off]` | Set the intensity, or turn it off. No argument = medium. |
+| `/capybara-help` | Quick reference card. |
 
-Plugin commands are namespaced `capybara:<name>` — type `/capybara:` and they show
-in the menu. They load at session start, so **start a new session after installing.**
-Commands need a skill-capable host (Claude Code); the wizard-installed tools
-(Cursor, Copilot, OpenCode) get the always-on rules without the slash commands.
+Commands load at session start, so **start a new session after installing.** The
+wizard-installed tools (Cursor, Copilot, OpenCode) get the same always-on rules.
 
 ## Develop & test locally
 

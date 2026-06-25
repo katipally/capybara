@@ -4,14 +4,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const { getLevel, setLevel, flagPath, ponytailActive } = require('./config.js');
+const { getLevel, setLevel, flagPath, ponytailActive, writeHookOutput } = require('./config.js');
 const { getInstructions } = require('../principles/build-instructions.js');
 
 const level = getLevel();
 if (!fs.existsSync(flagPath())) setLevel(level); // first run: persist default
 
 if (level !== 'off') {
-  process.stdout.write(getInstructions(level, ponytailActive()));
+  let out = getInstructions(level, ponytailActive());
 
   // One-time statusline nudge: only if no statusline configured yet.
   try {
@@ -19,8 +19,10 @@ if (level !== 'off') {
     const raw = fs.existsSync(settings) ? JSON.parse(fs.readFileSync(settings, 'utf8')) : {};
     if (!raw.statusLine) {
       const sh = path.join(__dirname, 'statusline.sh');
-      process.stdout.write(`\n\n[capybara] Optional: show the level badge in your statusline by adding to settings.json:\n"statusLine": { "type": "command", "command": "bash \\"${sh}\\"" }`);
+      out += `\n\n[capybara] Optional: show the level badge in your statusline by adding to settings.json:\n"statusLine": { "type": "command", "command": "bash \\"${sh}\\"" }`;
     }
   } catch {}
+
+  writeHookOutput('SessionStart', out);
 }
 process.exit(0);

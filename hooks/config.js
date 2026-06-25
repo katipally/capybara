@@ -39,9 +39,9 @@ function setLevel(level) {
   } catch {}
 }
 
-// "/capybara high", "capybara low", "/capybara off" -> level; null if no match.
+// "/capybara high", "capybara low", "/capybara:capybara off" -> level; null if none.
 function parseCommand(text) {
-  const m = /(?:^|\s)\/?capybara\s+(off|low|medium|high)\b/i.exec(text || '');
+  const m = /(?:^|\s)[/@$]?capybara(?::capybara)?\s+(off|low|medium|high)\b/i.exec(text || '');
   return m ? m[1].toLowerCase() : null;
 }
 // "stop capybara" / "normal mode" -> deactivate.
@@ -49,4 +49,18 @@ function isDeactivation(text) {
   return /\b(stop\s+capybara|normal\s+mode)\b/i.test(text || '');
 }
 
-module.exports = { configDir, flagPath, ponytailActive, getLevel, setLevel, parseCommand, isDeactivation };
+// Emit hook context in the form Claude Code expects per event.
+// SessionStart / UserPromptSubmit accept raw stdout; SubagentStart DROPS raw text
+// and requires the hookSpecificOutput JSON wrapper or the context never arrives.
+function writeHookOutput(event, context) {
+  if (!context) return;
+  if (event === 'SubagentStart') {
+    process.stdout.write(JSON.stringify({
+      hookSpecificOutput: { hookEventName: event, additionalContext: context },
+    }));
+  } else {
+    process.stdout.write(context);
+  }
+}
+
+module.exports = { configDir, flagPath, ponytailActive, getLevel, setLevel, parseCommand, isDeactivation, writeHookOutput };

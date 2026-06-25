@@ -7,7 +7,7 @@ const os = require('node:os');
 const path = require('node:path');
 
 const { getInstructions } = require('../principles/build-instructions.js');
-const { parseCommand, isDeactivation } = require('../hooks/config.js');
+const { parseCommand, isDeactivation, writeHookOutput } = require('../hooks/config.js');
 const { BRIDGES, hasBlock } = require('../installer/bridges.js');
 
 // principles
@@ -36,5 +36,23 @@ assert.strictEqual(once, 1, 'update is idempotent (one block, not two)');
 claude.remove(tmp);
 assert.ok(!hasBlock(f1) && !fs.existsSync(f1), 'remove cleans up');
 fs.rmSync(tmp, { recursive: true, force: true });
+
+// command parsing handles the namespaced form too
+assert.strictEqual(parseCommand('/capybara:capybara off'), 'off');
+
+// the two slash commands exist (these ARE the plugin's only commands)
+for (const c of ['capybara.toml', 'capybara-help.toml']) {
+  assert.ok(fs.existsSync(path.join(__dirname, '..', 'commands', c)), `missing command ${c}`);
+}
+
+// SubagentStart MUST be JSON-wrapped or Claude Code drops the context
+const captured = [];
+const orig = process.stdout.write;
+process.stdout.write = (s) => { captured.push(s); return true; };
+writeHookOutput('SubagentStart', 'hello');
+writeHookOutput('SessionStart', 'plain');
+process.stdout.write = orig;
+assert.deepStrictEqual(JSON.parse(captured[0]).hookSpecificOutput, { hookEventName: 'SubagentStart', additionalContext: 'hello' });
+assert.strictEqual(captured[1], 'plain', 'SessionStart stays raw');
 
 console.log('ok — all smoke checks passed');

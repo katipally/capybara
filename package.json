@@ -16,5 +16,5 @@
   "bugs": { "url": "https://github.com/katipally/capybara/issues" },
   "engines": { "node": ">=18" },
   "publishConfig": { "access": "public" },
-  "files": ["bin", "installer", "principles", "skills", "agents", "hooks", ".claude-plugin", "LICENSE", "README.md"]
+  "files": ["bin", "installer", "principles", "commands", "hooks", ".claude-plugin", "LICENSE", "README.md"]
 }
