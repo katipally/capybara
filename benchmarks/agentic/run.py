@@ -123,8 +123,11 @@ def _is_test(path: str):
     the COMPLETE pillar's discipline, a POSITIVE signal, so it is never counted as source bloat."""
     p = Path(path)
     name = p.name.lower()
-    return (name.startswith("test_") or name.endswith(("_test.py", ".test.js", ".test.ts",
-            ".spec.js", ".spec.ts")) or "test" in [part.lower() for part in p.parts[:-1]])
+    if any(part.lower() in ("test", "tests", "__tests__") for part in p.parts[:-1]):
+        return True
+    # any file whose name is or contains a test/spec token at a word boundary:
+    # test.js, test-widget.js, run-test.js, foo.test.ts, foo_test.py, spec.js (not "latest.js")
+    return bool(re.search(r"(^|[._-])(test|spec)([._-]|$)", name))
 
 
 def _diff_stats(workdir: Path):
@@ -142,7 +145,10 @@ def _diff_stats(workdir: Path):
         if added == "-":                                  # binary
             continue
         name = Path(path).name
-        if Path(path).suffix not in CODE_EXT or name.startswith((".", "_")) or "node_modules" in path:
+        if Path(path).suffix not in CODE_EXT or name.startswith((".", "_")):
+            continue
+        # agent scratch and deps are not delivered code: subagent worktrees live under .claude/
+        if any(seg in path.split("/") for seg in ("node_modules", ".claude")) or ".claude/" in path:
             continue
         if _is_test(path):
             test_loc += int(added); test_files += 1
