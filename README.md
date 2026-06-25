@@ -76,15 +76,31 @@ A one-line fix gets the rules and nothing else: no ceremony, no token burst. A r
 
 ## Does it actually help? (numbers)
 
-Short answer: there's a benchmark you can run yourself, and the results live in [`benchmarks/`](benchmarks/). We don't ship made-up numbers in this README. Run the suite against your own models and read the dated writeup it produces:
+The honest answer: capybaraa's value is behavioral, so it shows up in a real agent session, not a one-shot line count. The [agentic benchmark](benchmarks/agentic/) runs actual headless Claude Code sessions on seeded workspaces, three arms (bare baseline, capybaraa, and a "just be concise" one-liner), and scores each on the pillar it targets.
 
-```bash
-cd benchmarks
-npx promptfoo eval -c promptfooconfig.yaml --output results/latest.json   # needs your model creds
-node score.js results/latest.json                                        # LOC / cost / latency table
+From the first agentic run (Sonnet 4.6, n=3, [full writeup](benchmarks/results/2026-06-25-agentic-sonnet.md)):
+
+```
+ CLARIFY (judge 0-3)   capybaraa 3.0  >  baseline 2.5  >  "be concise" 2.0
+                       it asks the questions a senior dev needs, before coding
+ LEAN  (over-build)    star rating 32 -> 25 LOC (-22%), palette 90 -> 82, export 19 -> 17
+                       and the completeness judge scores it 3/3: leaner, still fully built
+ SAFETY / correctness  100% across every arm; capybaraa never traded a guard for fewer lines
+ COST                  ~5-15% more per task: the price of asking + checking more
 ```
 
-The harness pairs each task with a correctness gate, so a broken one-liner that "looks short" fails instead of scoring well. Methodology and caveats (what's executed vs. structurally checked, single-shot vs. agentic) are in [`benchmarks/README.md`](benchmarks/README.md). Once you've run it, the medians land in `benchmarks/results/` and you can quote them here.
+The point isn't "fewest lines." It's that capybaraa clarifies more, builds leaner without shipping a stub, and stays safe, and it beats a bare "be concise" instruction at all three. Every gate ships a good/bad reference and is validated before any API spend; the judges are auditable (fixed model, published rubric, self-validated). Methodology, isolation, and caveats are in [`benchmarks/agentic/README.md`](benchmarks/agentic/README.md).
+
+Run it yourself (needs the `claude` CLI and Python 3):
+
+```bash
+cd benchmarks/agentic
+python3 run.py --selftest                                                  # prove the instruments, no API
+python3 run.py --all --arms baseline,capybaraa,concise --models sonnet --runs 3
+python3 judge.py --run runs/<stamp> && python3 judge.py --complete-run runs/<stamp>
+```
+
+There's also an older single-shot LOC bench under [`benchmarks/`](benchmarks/) (`promptfooconfig.yaml`); it only measures lines, the one dimension capybaraa barely moves, so prefer the agentic one.
 
 ## Install
 
