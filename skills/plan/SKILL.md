@@ -1,6 +1,6 @@
 ---
-name: capybara-plan
-description: Plan a feature or change the capybara way — clarify with ASCII diagrams, grouped questions, and edge-case coverage before writing code. Use when the user asks to build/design/implement something non-trivial, or types /capybara-plan.
+name: plan
+description: Plan a feature or change the capybara way — clarify with ASCII diagrams, curated questions, and edge-case coverage before writing code. Use when the user asks to build/design/implement something non-trivial, or types /capybara:plan.
 argument-hint: "[what to plan]"
 allowed-tools: Read, Grep, Glob, WebSearch, WebFetch
 license: MIT
@@ -45,7 +45,7 @@ anything ambiguous.
 5. **Spec → real implementation.** Write the recommended approach only — name the
    files to touch and the existing functions to reuse. Climb the LEAN ladder and
    implement the proper root fix, not a patch over the symptom. Finish with the
-   COMPLETE done-gate (see capybara-done).
+   COMPLETE done-gate (see /capybara:done).
 
 Output terse and scannable. No filler. If a question has a clear default, take it
 and say so in one line rather than asking.

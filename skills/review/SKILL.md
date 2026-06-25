@@ -1,6 +1,6 @@
 ---
-name: capybara-review
-description: Review the current diff against the 6 capybara pillars — what to delete, simplify, optimize, or clean. Use when the user says "capybara review", "review for bloat", or types /capybara-review.
+name: review
+description: Review the current diff against the 6 capybara pillars — what to delete, simplify, optimize, or clean. Use when the user says "capybara review", "review for bloat", or types /capybara:review.
 allowed-tools: Read, Grep, Glob, Bash
 license: MIT
 ---

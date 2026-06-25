@@ -1,6 +1,6 @@
 ---
-name: capybara-clean
-description: Hygiene pass over code you're changing — remove dead code and stale comments, sanitize inputs, and surface security issues. Use when refactoring, after a big change, or when the user types /capybara-clean.
+name: clean
+description: Hygiene pass over code you're changing — remove dead code and stale comments, sanitize inputs, and surface security issues. Use when refactoring, after a big change, or when the user types /capybara:clean.
 allowed-tools: Read, Grep, Glob, Bash
 license: MIT
 ---

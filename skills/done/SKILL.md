@@ -1,6 +1,6 @@
 ---
-name: capybara-done
-description: The done-gate — verify a change actually works before claiming "done". Use when finishing a non-trivial change, before saying it's complete, or when the user types /capybara-done.
+name: done
+description: The done-gate — verify a change actually works before claiming "done". Use when finishing a non-trivial change, before saying it's complete, or when the user types /capybara:done.
 allowed-tools: Read, Grep, Glob, Bash
 license: MIT
 ---
