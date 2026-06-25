@@ -1,3 +1,6 @@
 node_modules/
 *.log
 .DS_Store
+
+benchmarks/agentic/runs/
+__pycache__/
