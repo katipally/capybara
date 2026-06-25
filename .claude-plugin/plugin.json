@@ -1,6 +1,6 @@
 {
   "name": "capybara",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Calm senior-dev mode for AI coding agents: clarify before code (ASCII plans + questions + edge cases), stay lean, write optimal code, spend tokens proportionally, finish terminally, leave the repo clean. Funny name, professional work.",
   "author": { "name": "Yashwanth Reddy" },
   "homepage": "https://github.com/katipally/capybara",
