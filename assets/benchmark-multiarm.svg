@@ -1,0 +1,66 @@
+<svg viewBox="0 0 860 470" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>The clarify-vs-lean tradeoff across five arms (Claude Code, Haiku 4.5, n=3)</title>
+  <text x="430" y="24" font-size="15" font-weight="600" fill="#8b949e" text-anchor="middle">Clarify vs lean: five arms (Claude Code, Haiku 4.5, n=3)</text>
+
+  <rect x="150" y="38" width="12" height="12" rx="2" fill="#8b949e"/><text x="167" y="48" font-size="12" fill="#8b949e">baseline</text>
+  <rect x="238" y="38" width="12" height="12" rx="2" fill="#d9822b"/><text x="255" y="48" font-size="12" fill="#d9822b" font-weight="600">capybaraa</text>
+  <rect x="330" y="38" width="12" height="12" rx="2" fill="#2da44e"/><text x="347" y="48" font-size="12" fill="#8b949e">ponytail</text>
+  <rect x="412" y="38" width="12" height="12" rx="2" fill="#a371f7"/><text x="429" y="48" font-size="12" fill="#8b949e">caveman</text>
+  <rect x="492" y="38" width="12" height="12" rx="2" fill="#6e7681"/><text x="509" y="48" font-size="12" fill="#8b949e">yagni-oneliner</text>
+
+  <!-- LEFT PANEL: LOC on the two over-build tasks (lower is leaner) -->
+  <text x="240" y="78" font-size="13" font-weight="600" fill="#8b949e" text-anchor="middle">LOC, over-build tasks (lower = leaner)</text>
+  <line x1="70" y1="300" x2="410" y2="300" stroke="#8b949e" stroke-opacity="0.55"/>
+  <line x1="70" y1="235" x2="410" y2="235" stroke="#8b949e" stroke-opacity="0.14"/>
+  <line x1="70" y1="170" x2="410" y2="170" stroke="#8b949e" stroke-opacity="0.14"/>
+  <text x="63" y="304" font-size="10" fill="#8b949e" text-anchor="end">0</text>
+  <text x="63" y="239" font-size="10" fill="#8b949e" text-anchor="end">80</text>
+  <text x="63" y="174" font-size="10" fill="#8b949e" text-anchor="end">160</text>
+
+  <!-- star rating (max 60 -> scale 160px = 1.625px/loc) -->
+  <text x="135" y="318" font-size="11" fill="#8b949e" text-anchor="middle">star rating</text>
+  <rect x="78"  y="203" width="20" height="97" rx="2" fill="#8b949e"/><text x="88"  y="198" font-size="9" fill="#8b949e" text-anchor="middle">60</text>
+  <rect x="100" y="214" width="20" height="86" rx="2" fill="#d9822b"/><text x="110" y="209" font-size="9" fill="#d9822b" text-anchor="middle">53</text>
+  <rect x="122" y="235" width="20" height="65" rx="2" fill="#2da44e"/><text x="132" y="230" font-size="9" fill="#2da44e" text-anchor="middle">40</text>
+  <rect x="144" y="222" width="20" height="78" rx="2" fill="#a371f7"/><text x="154" y="217" font-size="9" fill="#a371f7" text-anchor="middle">48</text>
+  <rect x="166" y="256" width="20" height="44" rx="2" fill="#6e7681"/><text x="176" y="251" font-size="9" fill="#6e7681" text-anchor="middle">27</text>
+
+  <!-- color palette (max 154 -> scale 1.0px/loc would overflow; use 0.94px/loc, 154->145) -->
+  <text x="305" y="318" font-size="11" fill="#8b949e" text-anchor="middle">color palette</text>
+  <rect x="248" y="155" width="20" height="145" rx="2" fill="#8b949e"/><text x="258" y="150" font-size="9" fill="#8b949e" text-anchor="middle">154</text>
+  <rect x="270" y="173" width="20" height="127" rx="2" fill="#d9822b"/><text x="280" y="168" font-size="9" fill="#d9822b" text-anchor="middle">135</text>
+  <rect x="292" y="219" width="20" height="81" rx="2" fill="#2da44e"/><text x="302" y="214" font-size="9" fill="#2da44e" text-anchor="middle">86</text>
+  <rect x="314" y="166" width="20" height="134" rx="2" fill="#a371f7"/><text x="324" y="161" font-size="9" fill="#a371f7" text-anchor="middle">143</text>
+  <rect x="336" y="256" width="20" height="44" rx="2" fill="#6e7681"/><text x="346" y="251" font-size="9" fill="#6e7681" text-anchor="middle">47</text>
+
+  <!-- RIGHT PANEL: CLARIFY score 0-3 (higher is better) -->
+  <text x="640" y="78" font-size="13" font-weight="600" fill="#8b949e" text-anchor="middle">CLARIFY score 0-3 (higher = asks first)</text>
+  <line x1="490" y1="300" x2="820" y2="300" stroke="#8b949e" stroke-opacity="0.55"/>
+  <line x1="490" y1="213" x2="820" y2="213" stroke="#8b949e" stroke-opacity="0.14"/>
+  <line x1="490" y1="126" x2="820" y2="126" stroke="#8b949e" stroke-opacity="0.14"/>
+  <text x="483" y="304" font-size="10" fill="#8b949e" text-anchor="end">0</text>
+  <text x="483" y="217" font-size="10" fill="#8b949e" text-anchor="end">1.5</text>
+  <text x="483" y="130" font-size="10" fill="#8b949e" text-anchor="end">3</text>
+
+  <!-- scale: 174px = 3.0 -> 58px per point -->
+  <rect x="520" y="213" width="46" height="87"  rx="2" fill="#8b949e"/><text x="543" y="208" font-size="10" fill="#8b949e" text-anchor="middle">1.5</text>
+  <rect x="578" y="184" width="46" height="116" rx="2" fill="#d9822b"/><text x="601" y="179" font-size="10" font-weight="600" fill="#d9822b" text-anchor="middle">2.0</text>
+  <rect x="636" y="184" width="46" height="116" rx="2" fill="#2da44e"/><text x="659" y="179" font-size="10" fill="#2da44e" text-anchor="middle">2.0</text>
+  <rect x="694" y="242" width="46" height="58"  rx="2" fill="#a371f7"/><text x="717" y="237" font-size="10" fill="#a371f7" text-anchor="middle">1.0</text>
+  <rect x="752" y="298" width="46" height="2"   rx="1" fill="#6e7681"/><text x="775" y="293" font-size="10" fill="#cf222e" text-anchor="middle" font-weight="600">0.0</text>
+  <text x="543" y="318" font-size="10" fill="#8b949e" text-anchor="middle">base</text>
+  <text x="601" y="318" font-size="10" fill="#d9822b" text-anchor="middle" font-weight="600">capy</text>
+  <text x="659" y="318" font-size="10" fill="#8b949e" text-anchor="middle">pony</text>
+  <text x="717" y="318" font-size="10" fill="#8b949e" text-anchor="middle">cave</text>
+  <text x="775" y="318" font-size="10" fill="#8b949e" text-anchor="middle">yagni</text>
+
+  <line x1="430" y1="92" x2="430" y2="330" stroke="#8b949e" stroke-opacity="0.2"/>
+
+  <text x="20" y="360" font-size="12" fill="#8b949e">The tradeoff in one picture: <tspan fill="#6e7681" font-weight="600">yagni-oneliner</tspan> cuts the most lines but clarifies the least (0.0/3), it</text>
+  <text x="20" y="378" font-size="12" fill="#8b949e">silently assumed the spec and shipped. <tspan fill="#d9822b" font-weight="600">capybaraa</tspan> sits with <tspan fill="#2da44e" font-weight="600">ponytail</tspan> in the "ask first" cluster (both 2.0),</text>
+  <text x="20" y="396" font-size="12" fill="#8b949e">cuts moderately, and is the only arm that writes tests. Fewer lines isn't free if it means guessing the spec.</text>
+
+  <line x1="20" y1="416" x2="840" y2="416" stroke="#8b949e" stroke-opacity="0.25"/>
+  <text x="20" y="438" font-size="11" fill="#8b949e" opacity="0.85">Median LOC over 3 runs; CLARIFY is the LLM-judge median over the two ambiguous tickets (n=6 each). Haiku 4.5, n=3.</text>
+  <text x="20" y="456" font-size="11" fill="#8b949e" opacity="0.85">The surgical reuse/native tasks are 1 line for every arm (irreducible), so they tie and are omitted here.</text>
+</svg>

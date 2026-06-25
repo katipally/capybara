@@ -19,7 +19,7 @@ Isolation (the lesson ponytail learned the hard way): capybaraa is a SessionStar
 plugin. To test exactly one arm we (1) exclude the user's global plugins with
 --setting-sources project,local, (2) load capybaraa for its arm only via --plugin-dir, and
 (3) give every cell its OWN CLAUDE_CONFIG_DIR so a stale "off" flag in the real ~/.claude
-can't silently neuter the treatment. The capybaraa arm runs at level=high.
+can't silently neuter the treatment. The capybaraa arm runs at mode=deep.
 """
 import argparse, concurrent.futures, datetime, json, os, re, shutil, statistics, subprocess, sys, tempfile
 from collections import defaultdict
@@ -42,7 +42,7 @@ MODELS = {"haiku": "claude-haiku-4-5-20251001", "sonnet": "claude-sonnet-4-6", "
 ARMS = {
     "baseline":       {"kind": "bare"},
     "regular":        {"kind": "bare"},                                   # alias for baseline
-    "capybaraa":      {"kind": "plugin", "src": "capybaraa", "flag": ".capybaraa-active", "level": "high"},
+    "capybaraa":      {"kind": "plugin", "src": "capybaraa", "flag": ".capybaraa-active", "level": "deep"},
     "ponytail":       {"kind": "plugin", "src": "ponytail",  "flag": ".ponytail-active",  "level": "full"},
     "caveman":        {"kind": "prompt", "text": None},                   # filled from caveman-SKILL.md
     "yagni":          {"kind": "prompt", "text": "Follow YAGNI principles."},

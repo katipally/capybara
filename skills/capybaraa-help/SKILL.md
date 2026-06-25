@@ -1,6 +1,6 @@
 ---
 name: capybaraa-help
-description: Quick reference for capybaraa, what it does, the six pillars, and how to set the level. Use when the user types /capybaraa-help or asks how capybaraa works.
+description: Quick reference for capybaraa, what it does, the six pillars, and how to set the mode. Use when the user types /capybaraa-help or asks how capybaraa works.
 disable-model-invocation: true
 license: MIT
 ---
@@ -22,15 +22,18 @@ Render this card, change nothing.
           HYGIENE  replace not pile-on · kill dead code/stale comments ·
                    sanitize · flag security
 
- SLASH    /capybaraa [low|medium|high|off]   set intensity
+ SLASH    /capybaraa [lean|deep|off]         pick the mode
           /capybaraa-review                  review the diff against the pillars
           /capybaraa-audit                   scan the whole repo against the pillars
           /capybaraa-help                    this card
 
  DETAIL   full per-pillar guidance: references/principles.md
 
- LEVELS   low = nudges · medium = default · high = aggressive
+ MODES    lean = min tokens, build tight, ask only what blocks correctness
+          deep = default; full clarify + ASCII + edge cases, complete code
+ SIGNAL   replies open with  🦫 capybaraa · <mode>  and non-trivial work
+          closes with a one-line sign-off, so you can see it is on
  OFF      "stop capybaraa"  or  /capybaraa off
- DEFAULT  CAPYBARAA_DEFAULT_LEVEL env (low|medium|high|off), or
-          ~/.config/capybaraa/config.json {"defaultLevel":"high"}
+ DEFAULT  CAPYBARAA_DEFAULT_LEVEL env (lean|deep|off), or
+          ~/.config/capybaraa/config.json {"defaultLevel":"lean"}
 ```

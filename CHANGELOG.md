@@ -3,6 +3,25 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com).
 
+## [0.2.4] - 2026-06-25
+
+- **Two modes instead of three levels.** `low`/`medium`/`high` are replaced by two
+  modes chosen on the detail/token tradeoff: **`lean`** (minimum tokens: build tight,
+  ask only what blocks correctness, skip ASCII unless it stops the wrong build) and
+  **`deep`** *(default)* (full clarify-before-code, ASCII on the options, every edge case,
+  complete-but-minimal code, strict done-gate). The six pillars hold in both; `lean`
+  saves tokens, never validation or security. `/capybaraa lean|deep|off`, statusline shows
+  `[CAPYBARAA]` (deep) or `[CAPYBARAA:LEAN]`. Default flips from `medium` to `deep`.
+- **Visible signal in responses.** Capybaraa now opens substantive replies with a
+  `🦫 capybaraa · <mode>` badge and closes non-trivial work with a one-line sign-off of
+  what it did under the pillars, so you can always tell it is active and shaping the
+  answer. One line each, the only ceremony it adds to how the agent talks.
+- **README benchmark graphs.** Added two SVG charts
+  (`assets/benchmark-multiarm.svg`, `assets/benchmark-gates.svg`) built from the existing
+  five-arm Haiku 4.5 run: the clarify-vs-lean tradeoff and the gate scoreboard.
+- **Dropped a dead dependency.** Removed the unused `playwright` dependency (never
+  imported); the plugin now ships with zero runtime dependencies, only the Node stdlib.
+
 ## [0.2.3] - 2026-06-25
 
 - **Reframed "plan mode" to behavior.** The injected principles, skills, help card,

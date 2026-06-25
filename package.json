@@ -1,17 +1,31 @@
 {
   "name": "capybaraa",
-  "version": "0.2.3",
+  "version": "0.2.4",
   "private": true,
-  "description": "Calm senior-dev mode for Claude Code: clarify before code (curated ASCII questions and edge cases), stay lean, optimal, terse, finish terminally, leave the repo clean.",
+  "description": "Calm senior-dev mode for Claude Code: clarify before code (curated ASCII questions and edge cases), stay lean, optimal, terse, finish terminally, leave the repo clean. Two modes (lean, deep) and a visible badge so you always know it is on.",
   "scripts": {
     "test": "node test/smoke.js",
     "validate": "claude plugin validate ."
   },
-  "keywords": ["ai", "claude-code", "plugin", "planning", "yagni", "minimalism"],
+  "keywords": [
+    "ai",
+    "claude-code",
+    "plugin",
+    "planning",
+    "yagni",
+    "minimalism"
+  ],
   "license": "MIT",
   "author": "Yashwanth Reddy",
   "homepage": "https://github.com/katipally/capybaraa#readme",
-  "repository": { "type": "git", "url": "git+https://github.com/katipally/capybaraa.git" },
-  "bugs": { "url": "https://github.com/katipally/capybaraa/issues" },
-  "engines": { "node": ">=18" }
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/katipally/capybaraa.git"
+  },
+  "bugs": {
+    "url": "https://github.com/katipally/capybaraa/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  }
 }

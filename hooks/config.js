@@ -36,9 +36,9 @@ function setLevel(level) {
   } catch {}
 }
 
-// "/capybaraa high", "capybaraa low", "/capybaraa:capybaraa off" -> level; null if none.
+// "/capybaraa deep", "capybaraa lean", "/capybaraa:capybaraa off" -> mode; null if none.
 function parseCommand(text) {
-  const m = /(?:^|\s)[/@$]?capybaraa(?::capybaraa)?\s+(off|low|medium|high)\b/i.exec(text || '');
+  const m = /(?:^|\s)[/@$]?capybaraa(?::capybaraa)?\s+(off|lean|deep)\b/i.exec(text || '');
   return m ? m[1].toLowerCase() : null;
 }
 // "stop capybaraa" / "normal mode" -> deactivate.

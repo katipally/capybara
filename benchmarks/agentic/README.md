@@ -23,7 +23,7 @@ This benchmark measures the behavior. Every cell is a **real headless Claude Cod
 Three kinds: `bare` (the unaided agent), `plugin` (a real SessionStart-hook plugin loaded via
 `--plugin-dir`), and `prompt` (a system-prompt instruction). Available:
 
-`baseline` / `regular` (bare) · `capybaraa` (plugin, level **high**) · `ponytail` (plugin,
+`baseline` / `regular` (bare) · `capybaraa` (plugin, mode **deep**) · `ponytail` (plugin,
 level **full**, from the installed ponytail plugin) · `caveman` (prompt, ponytail's caveman
 skill) · `yagni` · `yagni-oneliner` · `concise` (prompt).
 
@@ -44,10 +44,10 @@ ponytail hit and had to throw a run away for). Three guards:
 2. only the `capybaraa` arm gets `--plugin-dir <repo>`, loading exactly this plugin.
 3. every cell gets its **own** `CLAUDE_CONFIG_DIR`, so a stale `off` flag in your real
    `~/.claude/.capybaraa-active` cannot neuter the treatment. The capybaraa arm runs with
-   `CAPYBARAA_DEFAULT_LEVEL=high`.
+   `CAPYBARAA_DEFAULT_LEVEL=deep`.
 
 Each cell records an `activated` field read back from its isolated flag file: the `capybaraa`
-arm should show `high`, the others empty. That is the proof the hook fired for the right arm
+arm should show `deep`, the others empty. That is the proof the hook fired for the right arm
 and only that arm.
 
 ## Tasks (one tier per pillar)

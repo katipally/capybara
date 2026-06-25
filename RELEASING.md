@@ -21,7 +21,7 @@ katipally/capybaraa`, and the marketplace pin follows `ref:"main"` in
    npm test                 # node test/smoke.js
    claude plugin validate . # manifest check (Claude Code CLI)
    ```
-4. Commit and push to `main`. Done — marketplace users get it on their next pull.
+4. Commit and push to `main`. Done. Marketplace users get it on their next pull.
 
 CI (`.github/workflows/ci.yml`) runs `npm test` on Node 18/20/22 and a best-effort
 manifest validation for every push and PR, so a broken plugin never lands on `main`.

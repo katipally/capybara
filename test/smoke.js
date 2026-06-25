@@ -10,14 +10,20 @@ const { parseCommand, isDeactivation, writeHookOutput } = require('../hooks/conf
 
 // principles
 assert.strictEqual(getInstructions('off'), '', 'off => empty');
-assert.match(getInstructions('medium'), /level: medium/);
-assert.match(getInstructions('bogus'), /level: medium/, 'unknown level => default');
-assert.match(getInstructions('medium'), /2\. LEAN/, 'all six pillars ship');
-assert.doesNotMatch(getInstructions('medium'), /drop into plan mode/i, 'plan-mode wording reframed to behavior');
-assert.match(getInstructions('medium'), /references\/principles\.md/, 'CORE points at the detailed reference');
+assert.match(getInstructions('deep'), /mode: deep/);
+assert.match(getInstructions('lean'), /mode: lean/);
+assert.match(getInstructions('bogus'), /mode: deep/, 'unknown mode => default deep');
+assert.match(getInstructions('deep'), /2\. LEAN/, 'all six pillars ship');
+assert.match(getInstructions('deep'), /MODE deep/, 'deep delta ships');
+assert.match(getInstructions('lean'), /MODE lean/, 'lean delta ships');
+assert.doesNotMatch(getInstructions('deep'), /drop into plan mode/i, 'plan-mode wording reframed to behavior');
+assert.match(getInstructions('deep'), /references\/principles\.md/, 'CORE points at the detailed reference');
+assert.match(getInstructions('deep'), /🦫 capybaraa ·/, 'visible signal badge ships');
+assert.match(getInstructions('lean'), /SIGNAL:/, 'signal is level-agnostic (ships in lean too)');
 
 // command parsing
-assert.strictEqual(parseCommand('please /capybaraa high'), 'high');
+assert.strictEqual(parseCommand('please /capybaraa lean'), 'lean');
+assert.strictEqual(parseCommand('use /capybaraa deep now'), 'deep');
 assert.strictEqual(parseCommand('capybaraa off'), 'off');
 assert.strictEqual(parseCommand('no command here'), null);
 assert.ok(isDeactivation('stop capybaraa'));

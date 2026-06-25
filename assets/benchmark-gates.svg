@@ -1,0 +1,53 @@
+<svg viewBox="0 0 860 430" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <title>The gate scoreboard per arm: clarify, tests written, safety (Claude Code, Haiku 4.5, n=3)</title>
+  <text x="430" y="24" font-size="15" font-weight="600" fill="#8b949e" text-anchor="middle">The gate scoreboard (Claude Code, Haiku 4.5, n=3)</text>
+
+  <rect x="150" y="38" width="12" height="12" rx="2" fill="#8b949e"/><text x="167" y="48" font-size="12" fill="#8b949e">baseline</text>
+  <rect x="238" y="38" width="12" height="12" rx="2" fill="#d9822b"/><text x="255" y="48" font-size="12" fill="#d9822b" font-weight="600">capybaraa</text>
+  <rect x="330" y="38" width="12" height="12" rx="2" fill="#2da44e"/><text x="347" y="48" font-size="12" fill="#8b949e">ponytail</text>
+  <rect x="412" y="38" width="12" height="12" rx="2" fill="#a371f7"/><text x="429" y="48" font-size="12" fill="#8b949e">caveman</text>
+  <rect x="492" y="38" width="12" height="12" rx="2" fill="#6e7681"/><text x="509" y="48" font-size="12" fill="#8b949e">yagni-oneliner</text>
+
+  <text x="32" y="200" font-size="12" fill="#8b949e" text-anchor="middle" transform="rotate(-90 32 200)">% (higher is better)</text>
+  <line x1="85" y1="300" x2="815" y2="300" stroke="#8b949e" stroke-opacity="0.55"/>
+  <line x1="85" y1="245" x2="815" y2="245" stroke="#8b949e" stroke-opacity="0.14"/>
+  <line x1="85" y1="190" x2="815" y2="190" stroke="#8b949e" stroke-opacity="0.14"/>
+  <line x1="85" y1="135" x2="815" y2="135" stroke="#8b949e" stroke-opacity="0.45" stroke-dasharray="4 4"/>
+  <text x="78" y="304" font-size="11" fill="#8b949e" text-anchor="end">0%</text>
+  <text x="78" y="249" font-size="11" fill="#8b949e" text-anchor="end">33%</text>
+  <text x="78" y="194" font-size="11" fill="#8b949e" text-anchor="end">67%</text>
+  <text x="78" y="139" font-size="11" fill="#8b949e" text-anchor="end">100%</text>
+
+  <!-- scale: 165px = 100% -> 1.65px/% ; baseline y=300 -->
+  <!-- CLARIFY (as % of 3): base 50, capy 67, pony 67, cave 33, yagni 0 -->
+  <rect x="108" y="218" width="28" height="82"  rx="2" fill="#8b949e"/><text x="122" y="213" font-size="10" fill="#8b949e" text-anchor="middle">50%</text>
+  <rect x="142" y="190" width="28" height="110" rx="2" fill="#d9822b"/><text x="156" y="185" font-size="10" font-weight="600" fill="#d9822b" text-anchor="middle">67%</text>
+  <rect x="176" y="190" width="28" height="110" rx="2" fill="#2da44e"/><text x="190" y="185" font-size="10" fill="#2da44e" text-anchor="middle">67%</text>
+  <rect x="210" y="245" width="28" height="55"  rx="2" fill="#a371f7"/><text x="224" y="240" font-size="10" fill="#a371f7" text-anchor="middle">33%</text>
+  <rect x="244" y="298" width="28" height="2"   rx="1" fill="#6e7681"/><text x="258" y="293" font-size="10" fill="#cf222e" text-anchor="middle" font-weight="600">0%</text>
+  <text x="190" y="320" font-size="13" fill="#8b949e" text-anchor="middle">CLARIFY (/3)</text>
+  <text x="190" y="335" font-size="10" fill="#8b949e" opacity="0.8" text-anchor="middle">asks the spec questions first</text>
+
+  <!-- TESTS written: base 0, capy 50, pony 0, cave 0, yagni 0 -->
+  <rect x="348" y="298" width="28" height="2"  rx="1" fill="#8b949e"/><text x="362" y="293" font-size="10" fill="#8b949e" text-anchor="middle">0%</text>
+  <rect x="382" y="218" width="28" height="82" rx="2" fill="#d9822b"/><text x="396" y="213" font-size="10" font-weight="600" fill="#d9822b" text-anchor="middle">~50%</text>
+  <rect x="416" y="298" width="28" height="2"  rx="1" fill="#2da44e"/><text x="430" y="293" font-size="10" fill="#2da44e" text-anchor="middle">0%</text>
+  <rect x="450" y="298" width="28" height="2"  rx="1" fill="#a371f7"/><text x="464" y="293" font-size="10" fill="#a371f7" text-anchor="middle">0%</text>
+  <rect x="484" y="298" width="28" height="2"  rx="1" fill="#6e7681"/><text x="498" y="293" font-size="10" fill="#6e7681" text-anchor="middle">0%</text>
+  <text x="430" y="320" font-size="13" fill="#8b949e" text-anchor="middle">tests written</text>
+  <text x="430" y="335" font-size="10" fill="#8b949e" opacity="0.8" text-anchor="middle">capybaraa only (33-67% of runs)</text>
+
+  <!-- SAFETY: all 100% -->
+  <rect x="588" y="135" width="28" height="165" rx="2" fill="#8b949e"/><text x="602" y="130" font-size="10" fill="#8b949e" text-anchor="middle">100%</text>
+  <rect x="622" y="135" width="28" height="165" rx="2" fill="#d9822b"/><text x="636" y="130" font-size="10" font-weight="600" fill="#d9822b" text-anchor="middle">100%</text>
+  <rect x="656" y="135" width="28" height="165" rx="2" fill="#2da44e"/><text x="670" y="130" font-size="10" fill="#2da44e" text-anchor="middle">100%</text>
+  <rect x="690" y="135" width="28" height="165" rx="2" fill="#a371f7"/><text x="704" y="130" font-size="10" fill="#a371f7" text-anchor="middle">100%</text>
+  <rect x="724" y="135" width="28" height="165" rx="2" fill="#6e7681"/><text x="738" y="130" font-size="10" fill="#6e7681" text-anchor="middle">100%</text>
+  <text x="670" y="320" font-size="13" fill="#8b949e" text-anchor="middle">safety</text>
+  <text x="670" y="335" font-size="10" fill="#8b949e" opacity="0.8" text-anchor="middle">adversarial input, all arms held</text>
+
+  <line x1="20" y1="360" x2="840" y2="360" stroke="#8b949e" stroke-opacity="0.25"/>
+  <text x="20" y="382" font-size="12" fill="#8b949e"><tspan fill="#d9822b" font-weight="600">capybaraa</tspan> is the only arm that writes tests (its COMPLETE pillar), clarifies as much as ponytail, and stays</text>
+  <text x="20" y="400" font-size="12" fill="#8b949e">100% safe, at the highest token cost. The price of asking and checking more. Completeness: every arm 3/3 (no stubs).</text>
+  <text x="20" y="420" font-size="11" fill="#8b949e" opacity="0.8">CLARIFY shown as judge median /3. Tests/safety as % of runs. Haiku 4.5, n=3, directional, single model.</text>
+</svg>
