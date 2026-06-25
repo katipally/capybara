@@ -28,4 +28,4 @@ jobs:
           node-version: 20.x
       # The Claude Code CLI may not be installable in CI; don't fail the build if absent.
       - name: Validate plugin manifest (best-effort)
-        run: npx --yes @anthropic-ai/claude-code plugin validate . || echo "claude CLI unavailable — skipped"
+        run: npx --yes @anthropic-ai/claude-code plugin validate . || echo "claude CLI unavailable, skipped"

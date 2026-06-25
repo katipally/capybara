@@ -4,14 +4,14 @@
 
 const fs = require('fs');
 const path = require('path');
-const { getLevel, setLevel, flagPath, ponytailActive, writeHookOutput } = require('./config.js');
+const { getLevel, setLevel, flagPath, writeHookOutput } = require('./config.js');
 const { getInstructions } = require('../principles/build-instructions.js');
 
 const level = getLevel();
 if (!fs.existsSync(flagPath())) setLevel(level); // first run: persist default
 
 if (level !== 'off') {
-  let out = getInstructions(level, ponytailActive());
+  let out = getInstructions(level);
 
   // One-time statusline nudge: only if no statusline configured yet.
   try {

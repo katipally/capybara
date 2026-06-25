@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// capybara <init|doctor|update|uninstall|help> — run via `npx @katipally/capybara <cmd>`
+// capybara <init|doctor|update|uninstall|help>, run via `npx @katipally/capybara <cmd>`
 // or `capybara <cmd>` once installed. Installs the principle bridges into
 // whichever AI coding tools you have, in the current project.
 'use strict';
@@ -30,7 +30,7 @@ function update() {
     const installed = b.id === 'cursor' ? exists(f) : hasBlock(f);
     if (installed) { b.install(root); stdout.write(c('38;5;108', '  ✓ ') + `${b.name} refreshed\n`); n++; }
   }
-  stdout.write(n ? '\n' : c('90', '  nothing installed here yet — run "capybara init".\n\n'));
+  stdout.write(n ? '\n' : c('90', '  nothing installed here yet, run "capybara init".\n\n'));
 }
 
 function uninstall() {
@@ -45,7 +45,7 @@ function uninstall() {
 
 function help() {
   stdout.write(`
-🦫 ${c('1;38;5;179', 'capybara')} — calm senior-dev principles for AI coding agents
+🦫 ${c('1;38;5;179', 'capybara')}  calm senior-dev principles for AI coding agents
 
   ${c('1', 'capybara init')}       detect your tools and install the bridges (this project)
   ${c('1', 'capybara doctor')}     show what's installed where
@@ -54,7 +54,7 @@ function help() {
   ${c('1', 'capybara help')}       this
 
 Run via npx: ${c('1', 'npx @katipally/capybara init')}
-Claude Code users: prefer the native plugin — /plugin install capybara@capybara
+Claude Code users: prefer the native plugin, /plugin install capybara@capybara
 `);
 }
 

@@ -14,8 +14,7 @@ const { BRIDGES, hasBlock } = require('../installer/bridges.js');
 assert.strictEqual(getInstructions('off'), '', 'off => empty');
 assert.match(getInstructions('medium'), /level: medium/);
 assert.match(getInstructions('bogus'), /level: medium/, 'unknown level => default');
-assert.match(getInstructions('medium', true), /handled by ponytail/, 'ponytail dedupe drops LEAN');
-assert.doesNotMatch(getInstructions('medium', false).match(/2\. LEAN[\s\S]*?3\. OPTIMAL/)[0], /handled by ponytail/);
+assert.match(getInstructions('medium'), /2\. LEAN/, 'LEAN pillar always ships (no ponytail dependency)');
 
 // command parsing
 assert.strictEqual(parseCommand('please /capybara high'), 'high');
@@ -41,7 +40,7 @@ fs.rmSync(tmp, { recursive: true, force: true });
 assert.strictEqual(parseCommand('/capybara:capybara off'), 'off');
 
 // the two slash skills exist (Claude Code surfaces skills, not commands/*.toml)
-for (const s of ['capybara', 'capybara-help']) {
+for (const s of ['capybara', 'capybara-help', 'capybara-review']) {
   const p = path.join(__dirname, '..', 'skills', s, 'SKILL.md');
   assert.ok(fs.existsSync(p), `missing skill ${s}`);
   assert.ok(fs.readFileSync(p, 'utf8').startsWith('---'), `skill ${s} needs frontmatter`);
@@ -57,4 +56,4 @@ process.stdout.write = orig;
 assert.deepStrictEqual(JSON.parse(captured[0]).hookSpecificOutput, { hookEventName: 'SubagentStart', additionalContext: 'hello' });
 assert.strictEqual(captured[1], 'plain', 'SessionStart stays raw');
 
-console.log('ok — all smoke checks passed');
+console.log('ok: all smoke checks passed');

@@ -1,13 +1,13 @@
 {
   "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
   "name": "capybara",
-  "description": "Calm senior-dev coding principles + a clarify-before-code planning engine.",
+  "description": "Calm senior-dev coding principles that clarify before code.",
   "owner": { "name": "Yashwanth Reddy", "url": "https://github.com/katipally" },
   "plugins": [
     {
       "name": "capybara",
-      "description": "Six pillars (clarify, lean, optimal, economy, complete, hygiene) always-on via hooks; slash commands /capybara and /capybara-help only.",
-      "version": "0.1.2",
+      "description": "Six pillars (clarify, lean, optimal, economy, complete, hygiene) always-on via hooks; slash commands /capybara, /capybara-review, and /capybara-help.",
+      "version": "0.2.0",
       "category": "development",
       "keywords": ["planning", "yagni", "minimalism", "code-quality"],
       "source": "./"

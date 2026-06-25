@@ -13,9 +13,6 @@ function configDir() {
 function flagPath() {
   return path.join(configDir(), '.capybara-active');
 }
-function ponytailActive() {
-  return fs.existsSync(path.join(configDir(), '.ponytail-active'));
-}
 
 function getLevel() {
   try {
@@ -63,4 +60,4 @@ function writeHookOutput(event, context) {
   }
 }
 
-module.exports = { configDir, flagPath, ponytailActive, getLevel, setLevel, parseCommand, isDeactivation, writeHookOutput };
+module.exports = { configDir, flagPath, getLevel, setLevel, parseCommand, isDeactivation, writeHookOutput };

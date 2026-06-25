@@ -1,4 +1,4 @@
-// Interactive init wizard. Zero deps — node:readline/promises + raw ANSI.
+// Interactive init wizard. Zero deps: node:readline/promises + raw ANSI.
 'use strict';
 
 const readline = require('node:readline/promises');
@@ -8,7 +8,7 @@ const { BRIDGES } = require('./bridges.js');
 const c = (n, s) => `\x1b[${n}m${s}\x1b[0m`;
 
 async function runWizard(root) {
-  stdout.write(c('1;38;5;179', '\n🦫 capybara init') + '  — installing principles into your tools\n\n');
+  stdout.write(c('1;38;5;179', '\n🦫 capybara init') + '  installing principles into your tools\n\n');
 
   const detected = BRIDGES.map((b) => ({ b, on: b.detect() }));
   detected.forEach(({ b, on }, i) => {

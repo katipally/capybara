@@ -10,8 +10,8 @@ const { getInstructions } = require('../principles/build-instructions.js');
 const HOME = os.homedir();
 const exists = (p) => { try { return fs.existsSync(p); } catch { return false; } };
 
-// Off-Claude bridges always carry the full text (no ponytail dedupe outside Claude Code).
-const TEXT = () => getInstructions('medium', false);
+// Every bridge carries the full principle text at the default level.
+const TEXT = () => getInstructions('medium');
 
 const START = '<!-- capybara:start -->';
 const END = '<!-- capybara:end -->';
@@ -39,10 +39,10 @@ function removeBlock(file) {
   return file;
 }
 
-// Cursor uses a dedicated .mdc rule file with its own frontmatter — own it whole.
+// Cursor uses a dedicated .mdc rule file with its own frontmatter, own it whole.
 function writeMdc(file) {
   fs.mkdirSync(path.dirname(file), { recursive: true });
-  const content = `---\ndescription: Capybara — calm senior-dev coding principles\nalwaysApply: true\n---\n\n${TEXT()}\n`;
+  const content = `---\ndescription: Capybara, calm senior-dev coding principles\nalwaysApply: true\n---\n\n${TEXT()}\n`;
   fs.writeFileSync(file, content);
   return file;
 }

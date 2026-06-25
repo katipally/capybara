@@ -1,0 +1,28 @@
+# Capybara benchmark: does prepending the principles produce shorter code that still
+# works? Each task runs as bare prompt (baseline) and with capybara's text, across a
+# few models. Correctness is gated, so short-but-broken answers fail.
+#
+# Run it (needs your own creds, e.g. export ANTHROPIC_API_KEY=...):
+#   npx promptfoo eval -c promptfooconfig.yaml --output results/latest.json
+#   node score.js results/latest.json
+#
+# Swap providers for whatever you have keys for. More repeats = steadier medians.
+description: capybara vs baseline
+
+prompts:
+  - id: file://prompts.js:baseline
+    label: baseline
+  - id: file://prompts.js:capybara
+    label: capybara
+
+providers:
+  - anthropic:messages:claude-haiku-4-5-20251001
+  - anthropic:messages:claude-sonnet-4-6
+  # - anthropic:messages:claude-opus-4-8
+
+# Run each cell several times so the medians mean something.
+defaultTest:
+  options:
+    repeat: 5
+
+tests: file://tests.js
