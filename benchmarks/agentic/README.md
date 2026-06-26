@@ -143,9 +143,11 @@ the plugin's value, not only confirm it.
 
 ## Results
 
-Latest: [`../results/2026-06-26-sonnet-lean.md`](../results/2026-06-26-sonnet-lean.md) (Sonnet 4.6,
-the lean-ruleset rewrite, four arms, n=2; capybaraa now spends fewer output tokens and writes less
-code than the bare agent). Earlier: the [four-arm clarify run](../results/2026-06-26-sonnet-4arm.md)
+Latest: [`../results/2026-06-26-haiku-honest.md`](../results/2026-06-26-haiku-honest.md) (Haiku 4.5,
+four arms, n=3, with the safety tier; capybaraa is the leanest arm on code and fully safe, but
+spends more output tokens and cost than the bare agent on these small tasks). Cross-model:
+[`../results/2026-06-26-sonnet-lean.md`](../results/2026-06-26-sonnet-lean.md) (Sonnet 4.6, n=2,
+where output tokens came in under baseline). Earlier: the [four-arm clarify run](../results/2026-06-26-sonnet-4arm.md)
 and the broader [0.4.0 run](../results/2026-06-25-sonnet-0.4.0.md) covering the deterministic
 gates. Write each run up under `../results/` dated, with the per-task table; only paste numbers
 into the top-level README once you have actually run it.

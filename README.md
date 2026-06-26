@@ -20,7 +20,7 @@
 </p>
 
 <p align="center">
-  <strong>~10% fewer output tokens</strong> and <strong>~30% less code</strong> than a bare agent, fully complete &middot; plus the questions ponytail skips
+  <strong>~20% less code</strong> than a bare agent, fully complete and 100% safe on the adversarial tier &middot; plus the questions ponytail skips
 </p>
 
 You know the type. Unbothered, has seen every framework rise and fall and didn't migrate to any of them. You hand over a vague ticket and fifty lines of someone's first draft. He reads it, asks the two questions that actually matter, draws a little box-and-arrow on a napkin, and replaces the whole thing with the part you needed.
@@ -33,7 +33,7 @@ The ticket: "add user settings persistence."
 
 Claude can already ask good questions here, that's what plan mode is for. But in a plain run it tends to guess the spec and start building, and you find out it guessed wrong once it is written. In our benchmark, on a ticket like this the bare agent wrote ~300 lines of a settings panel nobody specified; capybaraa wrote zero and asked first.
 
-**Capybaraa makes asking-first the default**, even outside plan mode, and sharpens it: it goes straight to the few questions that actually decide the design and draws the choices so the tradeoff is obvious at a glance:
+The asking is Claude's; **capybaraa's specific add is the ASCII sketch on the options.** When it asks, it draws the choices so the tradeoff is obvious at a glance (unless the choice is shapeless and a sketch adds nothing), and it leans on asking the deciding questions even outside plan mode rather than guessing:
 
 ```
 🦫 two questions before I touch code:
@@ -58,24 +58,24 @@ That is the whole pitch: **ask when it's ambiguous, build lean, leave it clean.*
 We measured it instead of asserting it. The [agentic benchmark](benchmarks/agentic/) runs real headless Claude Code sessions (`claude -p`) in throwaway workspaces and puts capybaraa next to its honest peers: a **bare agent** (no plugin), **caveman** (a prose-compression skill), and **ponytail** (the pure-minimal plugin, loaded live). Same model, same task, same seed; the only change is the arm.
 
 <p align="center">
-  <img src="assets/benchmark.svg" width="720" alt="Bar chart, clear build tasks as percent of the bare baseline, lower is leaner. Lines of code: caveman 99%, ponytail 43%, capybaraa 69%. Output tokens: caveman 95%, ponytail 75%, capybaraa 90%. Cost: caveman 100%, ponytail 104%, capybaraa 105%. Wall time: caveman 93%, ponytail 94%, capybaraa 98%. All arms scored 3 of 3 complete.">
+  <img src="assets/benchmark.svg" width="760" alt="Grouped bar chart, every metric as a percent of the bare baseline on Haiku 4.5, lower is leaner. Lines of code: caveman 116%, ponytail 79%, capybaraa 77%. Output tokens: caveman 100%, ponytail 97%, capybaraa 109%. Cost: caveman 107%, ponytail 106%, capybaraa 113%. Wall time: caveman 100%, ponytail 102%, capybaraa 102%. Safety tier: baseline, caveman, ponytail, and capybaraa all 100%.">
 </p>
 
-| vs the bare baseline | lines of code | output tokens | cost | time | complete |
-|---|--:|--:|--:|--:|--:|
-| caveman | 99% | 95% | 100% | 93% | 3/3 |
-| **ponytail** | **43%** | **75%** | 104% | 94% | 3/3 |
-| **capybaraa** | 69% | 90% | 105% | 98% | 3/3 |
+| vs the bare baseline | lines of code | output tokens | cost | time | complete | safe |
+|---|--:|--:|--:|--:|:--:|:--:|
+| caveman | 116% | 100% | 107% | 100% | 3/3 | 100% |
+| **ponytail** | **79%** | **97%** | 106% | 102% | 3/3 | 100% |
+| **capybaraa** | **77%** | 109% | 113% | 102% | 3/3 | 100% |
 
 Read it straight, no spin:
 
-**1. capybaraa spends fewer tokens than the bare agent.** It writes **~30% less code** and **~10% fewer output tokens**, and finishes a hair faster, all while scoring fully complete (3/3). The earlier version of this plugin tied the bare agent on output and cost 16% more; cutting the ruleset to ponytail size is what turned that around.
+**1. capybaraa writes the least code, and stays complete and safe.** At 77% of the bare agent's lines it is the leanest arm, a hair under ponytail (79%) and far under caveman (116%), while scoring fully complete (3/3) and 100% on the adversarial safety tier. The saving is real bloat removed, not a dropped feature: most of it is `feat-palette`, 84 lines against the bare agent's 138.
 
-**2. ponytail is the leanest on raw lines, by a lot.** That is its single axis and it wins it (43% of baseline code). capybaraa lands between the bare agent and ponytail, the honest place for a tool that also keeps validation, error handling, and accessibility, and asks before it builds the wrong thing.
+**2. It does not beat the bare agent on output tokens or cost here: +9% tokens, +13% cost.** capybaraa writes less code but a bit more prose, and its always-on ~500-token ruleset is re-read each turn; on tasks this small that overhead is not amortized. caveman, a pure prose-compression skill, is the control: it does **not** get leaner on code (116%), so capybaraa's code saving is behavioral, not just "talk less."
 
-**3. Cost is the one metric still a touch above baseline (+5%).** On tasks this small no injected plugin beats a bare agent on cost: even ponytail is +4%. The injected ruleset is cached and re-read each turn, a few hundred tokens the trivial task can't fully amortize. On bigger tasks the 30% code saving dominates and it flips. We do not claim a cost win.
+**3. Model and task size decide the token story.** On the earlier Sonnet run the same metrics were favorable (output tokens 90%, cost +5%); on small Haiku tasks the plugin tax dominates instead. We do not claim a token or cost win on this batch; on bigger work the code saving dominates and cost flips below baseline.
 
-Honest caveats: a small task set (n=2, three build tasks) on one model, so read it as directional, not a leaderboard. Completeness is an LLM judge (fixed model, temperature 0, published rubric, run with no plugin loaded so no arm grades itself). The ASK habit (questions plus an ASCII sketch on an ambiguous ticket) still ships; it is not benchmarked here, this run is about token efficiency on clear work. [Full writeup and the reproduce commands.](benchmarks/results/2026-06-26-sonnet-lean.md)
+Honest caveats: a small task set (n=3, three build tasks) on one model, so read it as directional, not a leaderboard. Completeness is an LLM judge (fixed model, temperature 0, published rubric, run with no plugin loaded so no arm grades itself). [Full writeup and the reproduce commands.](benchmarks/results/2026-06-26-haiku-honest.md)
 
 ## How it works
 
@@ -96,7 +96,7 @@ plus five habits, the only things capybaraa adds over plain lean:
 
 | Habit | What it does |
 |--------|------------------|
-| **ASK** | When the spec is ambiguous, ask the few questions that actually decide the build before writing code, and draw a small ASCII sketch of the options so the tradeoff is concrete. Don't guess the spec; don't ask what the prompt or code already answers. |
+| **ASK** | Claude already asks when a spec is ambiguous (plan mode, its question prompt). Capybaraa's add is the ASCII sketch on the options: when it asks, it draws the choices so the tradeoff is concrete, unless the choice is shapeless and a sketch adds nothing. Still ask only the questions that decide the build, not what the prompt or code already answers. |
 | **OPTIMAL** | Right data structure, no needless O(n^2). Correctness and clarity first, no micro-optimizing without a reason. |
 | **TERSE** | Few words, few comments. No filler prose, no restating the obvious, no comment the code already says. |
 | **CLEAN** | Refactor means replace: rewrite in place and delete the dead code and stale comments you touch, no `v2` beside the old one. |
@@ -163,7 +163,7 @@ python3 chart.py runs/<stamp> ../../assets/benchmark.svg
 No. Trivial asks get the answer and nothing else. The questions only fire when the spec is ambiguous enough that guessing would build the wrong thing.
 
 **Does it actually save tokens?**
-Yes, on the metrics that matter: about 10% fewer output tokens and 30% less code than a bare agent (see the numbers), fully complete. Cost is the exception, a small ~5% plugin overhead on tiny tasks that even ponytail pays; it flips below baseline as tasks grow.
+It saves *code*: ~20% fewer lines than a bare agent, fully complete and fully safe (see the numbers). On *output tokens and cost* it depends on the model and task size. On small Haiku tasks it runs above baseline (+9% tokens, +13% cost): the always-on ruleset is re-read each turn and a tiny task can't amortize it. On the larger Sonnet run output tokens came in under baseline (90%). We don't claim a blanket token win; we claim less code, kept complete and safe.
 
 **How is this different from ponytail?**
 ponytail is tight, focused, and the leanest on raw lines. capybaraa is ponytail's discipline plus five habits: ask with an ASCII sketch, optimal code, terse output, clean refactors, and a real sync after a change. If you want pure ruthless leanness, use ponytail.

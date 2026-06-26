@@ -18,7 +18,7 @@ assert.match(onText, /The ladder/, 'the lean ladder ships');
 for (const habit of ['ASK', 'OPTIMAL', 'TERSE', 'CLEAN', 'SYNC']) {
   assert.match(onText, new RegExp(`\\b${habit}\\b`), `the ${habit} habit ships`);
 }
-assert.match(onText, /ASCII sketch of the options/, 'the ASCII-on-questions rule ships in CORE');
+assert.match(onText, /ASCII diagram/, 'the ASCII-on-questions rule ships in CORE');
 assert.match(onText, /🦫/, 'visible signal badge ships');
 // the old wall of text is gone: that is the whole point of the lean rewrite
 assert.doesNotMatch(onText, /7 pillars|seven pillars/, 'no seven-pillar framing');

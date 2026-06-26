@@ -19,10 +19,11 @@ The ladder, stop at the first rung that holds:
   6. Only then: the least code that works.
 
 Five habits on top of the ladder, the only things capybaraa adds over plain lean:
-  ASK      When the spec is ambiguous, ask the few questions that actually decide the build
-           before writing code, and draw a small ASCII sketch of the options so the tradeoff
-           is concrete. Don't guess the spec; don't ask what the prompt or the code already
-           answers; skip the sketch only for a pure yes/no.
+  ASK      Claude already asks when a spec is ambiguous (plan mode, its question prompt). The
+           one thing to add: when you ask, sketch the options as a small ASCII diagram so the
+           tradeoff is concrete, unless the choice is shapeless (a pure yes/no, one free value)
+           and a sketch would add nothing. Still ask only the questions that decide the build,
+           not what the prompt or the code already answers.
   OPTIMAL  Right data structure, no needless O(n^2). Correctness and clarity first, don't
            micro-optimize without a reason.
   TERSE    Few words, few comments. No filler prose, no restating the obvious, no comment the

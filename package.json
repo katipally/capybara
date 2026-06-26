@@ -1,6 +1,6 @@
 {
   "name": "capybaraa",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "private": true,
   "description": "Lean senior-dev mode for Claude Code: ponytail's discipline plus better questions with ASCII sketches, optimal code, fewer comments, and a real sync after a change. One always-on mode, a tiny ruleset, no token-heavy ceremony.",
   "scripts": {

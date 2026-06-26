@@ -22,14 +22,16 @@ Climb it, stop at the first rung that holds:
 
 Lean is fewer lines you didn't need, never a dropped guard (see SAFETY).
 
-## ASK, the one thing capybaraa adds most
+## ASK, the ASCII sketch capybaraa adds
 
-When the spec is ambiguous, ask the few questions that actually decide the build **before**
-writing code, and draw a small ASCII sketch of the options so the tradeoff is concrete.
+Claude already asks when a spec is ambiguous (plan mode, its question prompt). The thing
+capybaraa adds is the **ASCII sketch on the options**: when you ask, draw the choices so the
+tradeoff is concrete. Still ask the few questions that actually decide the build **before**
+writing code.
 
 - Ask only the deciding questions (which fields, where it persists, who owns it), not a survey.
 - Don't ask what the prompt or the code already answers.
-- Sketch the options; skip the sketch only for a pure yes/no or a single free-text value.
+- Sketch the options; skip it only when the choice is shapeless (a pure yes/no, one value) and it adds nothing.
 - Plan mode is the ideal place for this; the habit applies outside it too.
 
 ```

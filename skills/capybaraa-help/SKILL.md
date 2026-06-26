@@ -16,8 +16,8 @@ Render this card, change nothing.
  LADDER   does it need to exist? · reuse what's here · stdlib/platform ·
           installed dep · one line · then the least code that works
 
- HABITS   ASK      spec ambiguous? ask the deciding questions first,
-                   ASCII sketch on the options. don't guess.
+ HABITS   ASK      Claude already asks; the add is an ASCII sketch on the
+                   options when you do. ask only the deciding questions.
           OPTIMAL  right data structure · no needless O(n^2)
           TERSE    few words · few comments · no filler
           CLEAN    refactor = replace · kill dead code / stale comments

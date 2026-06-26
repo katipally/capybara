@@ -3,6 +3,23 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com).
 
+## [0.4.4] - 2026-06-26
+
+- **ASK reframed honestly.** Claude Code already asks when a spec is ambiguous (plan mode, its
+  question prompt); capybaraa does not invent that. Its actual add is the **ASCII sketch on the
+  options** when it asks, unless the choice is shapeless and a sketch adds nothing. Reworded CORE,
+  `references/principles.md`, the README, and both cards so nothing oversells the asking.
+- **Fresh Haiku benchmark, reported straight.** Four arms, n=3, now with a two-task adversarial
+  safety tier (path traversal, email injection). capybaraa is the **leanest arm on code** (77% of
+  baseline, a hair under ponytail), **3/3 complete**, and **100% safe**, but it spends **+9% output
+  tokens and +13% cost** vs the bare agent on these small tasks: the always-on ~500-token ruleset
+  is re-read each turn and a tiny task can't amortize it. The README headline no longer claims a
+  token win; it claims less code, kept complete and safe, and discloses the tax. On the earlier
+  Sonnet run output tokens came in under baseline (90%), so model and task size decide it. New
+  grouped-bar chart (LOC / tokens / cost / time plus the safety tier). Writeup:
+  `benchmarks/results/2026-06-26-haiku-honest.md`.
+- **README trimmed.** Removed the Star History section and the benchmark sub-caption.
+
 ## [0.4.3] - 2026-06-26
 
 - **The ruleset is now lean, and so are the numbers.** The injected core was ~1,500 tokens of

@@ -7,7 +7,7 @@
     {
       "name": "capybaraa",
       "description": "Ponytail's lean ladder plus five habits (ask with ASCII, optimal, terse, clean, sync), always-on via hooks; slash commands /capybaraa, /capybaraa-review, /capybaraa-audit, /capybaraa-sync, and /capybaraa-help.",
-      "version": "0.4.3",
+      "version": "0.4.4",
       "category": "development",
       "keywords": ["planning", "yagni", "minimalism", "code-quality"],
       "source": "./"

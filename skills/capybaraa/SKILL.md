@@ -13,8 +13,8 @@ session and applies to every task, scaled to its size. No command needed to use 
 It is ponytail's lean discipline plus five habits:
 
 **LEAN** (the ladder: does it need to exist? reuse what's here? stdlib or platform? installed
-dep? one line? then minimal code) · **ASK** (when the spec is ambiguous, ask the few questions
-that decide the build first, with an ASCII sketch of the options) · **OPTIMAL** (right data
+dep? one line? then minimal code) · **ASK** (Claude already asks; capybaraa adds an ASCII
+sketch on the options when you do, for the questions that decide the build) · **OPTIMAL** (right data
 structure, no needless O(n^2)) · **TERSE** (few words, few comments, no filler) · **CLEAN**
 (refactor means replace: rewrite in place, delete the dead code you touch) · **SYNC** (a change
 isn't done until the docs, tests, and refs that named the old shape catch up;
