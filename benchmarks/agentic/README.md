@@ -16,28 +16,26 @@ This benchmark measures the behavior. Every cell is a **real headless Claude Cod
 | unit | one prompt to one completion | a Claude Code session in a temp workspace |
 | baseline | bare model, prepended text | the **real agent** with no plugin (the fair baseline) |
 | activation | text prepend | the **actual SessionStart hook** via `--plugin-dir` |
-| measures | LOC + correctness | clarify, reuse, native, hygiene, done-gate, safety |
+| measures | LOC + correctness | clarify, lean, optimal, economy, hygiene, sync, done-gate, safety |
 
 ## Arms
 
-Three kinds: `bare` (the unaided agent), `plugin` (a real SessionStart-hook plugin loaded via
-`--plugin-dir`), and `prompt` (a system-prompt instruction). Available:
+The headline comparison is **capybaraa vs the bare baseline** - nothing else. Three kinds:
+`bare` (the unaided agent, the only thing capybaraa is scored against), `plugin` (capybaraa
+itself, loaded via `--plugin-dir`), and `prompt` (a generic one-line instruction, an optional
+reference point, not part of the headline read). Available:
 
-`baseline` / `regular` (bare) · `capybaraa` (plugin, **on**) · `ponytail` (plugin,
-level **full**, from the installed ponytail plugin) · `caveman` (prompt, ponytail's caveman
-skill) · `yagni` · `yagni-oneliner` · `concise` (prompt).
+`baseline` / `regular` (bare) · `capybaraa` (plugin, **on**) · `yagni` · `yagni-oneliner` ·
+`concise` (prompt).
 
-Pick with `--arms baseline,capybaraa,ponytail,caveman,yagni-oneliner`. The prompt arms are
-honest controls: if a one-line instruction matches the plugin, the benchmark should show it.
-plugin arms other than capybaraa resolve from `~/.claude/plugins/cache/<name>/` (override with
-`<NAME>_PLUGIN_DIR`); a missing one is reported, not silently skipped. A ponytail-style
-head-to-head of all five is in [`../results/2026-06-25-multiarm-haiku.md`](../results/2026-06-25-multiarm-haiku.md).
+Default `--arms` is `baseline,capybaraa`. The prompt arms are honest controls: if a one-line
+instruction matches the plugin on some axis, the benchmark should show it. capybaraa resolves
+to this repo (override with `CAPYBARAA_PLUGIN_DIR`).
 
 ## Isolation (why the baseline is trustworthy)
 
 Capybaraa activates from a `SessionStart` hook. If that hook fires on every arm, the baseline
-is secretly running capybaraa and the whole comparison is contaminated (the exact bug
-ponytail hit and had to throw a run away for). Three guards:
+is secretly running capybaraa and the whole comparison is contaminated. Three guards:
 
 1. `--setting-sources project,local` excludes the user's globally-installed plugins from
    every arm.
@@ -50,7 +48,7 @@ Each cell records an `activated` field read back from its isolated flag file: th
 arm should show `on`, the others empty. That is the proof the hook fired for the right arm
 and only that arm.
 
-## Tasks (one tier per pillar)
+## Tasks (covering every pillar)
 
 | id | pillar | the job | signal measured |
 |---|---|---|---|
@@ -58,10 +56,14 @@ and only that arm.
 | `clarify-export` | CLARIFY | "Add an export button" (ambiguous) | same |
 | `lean-reuse` | LEAN | add a slug field; repo already has `utils/slugify.js` | reused the helper vs reimplemented / added a dep |
 | `lean-native` | LEAN | add a date field to a form | `<input type="date">` vs a date-picker lib / hand-rolled widget |
+| `optimal-members` | OPTIMAL | `count_shared(a, b)` over large lists | promoted `b` to a set (O(n)) vs list-membership in a loop (O(n*m)) |
+| `economy-nofiller` | ECONOMY | implement a 1-line `to_cents` | clean vs comment lines outnumbering the code |
+| `sync-rename` | SYNC | rename `getLevel` → `getState` | every reference updated, comment included, vs a stale leftover |
 | `hygiene-replace` | HYGIENE | rewrite a field splitter for quoted fields | replaced the old helper vs piled a v2 beside it |
 | `complete-fixtest` | COMPLETE | "make the failing test pass" | did the agent **run** the test (`ran_check`); does it actually pass |
 | `safe-path` | SAFETY | implement `safe_join` | `../../etc/passwd` must not escape |
 | `safe-email` | SAFETY | implement `is_valid_email` | newline-injection address must be rejected |
+| `feat-rating` / `feat-export` / `feat-palette` | LEAN (open) | build a small UI feature | LOC for over-build + completeness judge |
 
 The SAFETY tier is the guardrail: it proves "leaner" never means "dropped a guard". Each
 safety task's `bad` reference is the lazy-but-plausible version, correct on the happy path,
@@ -70,7 +72,7 @@ unsafe on the adversarial input, exactly the code a binary correctness gate woul
 ## Metrics
 
 - **correct / safe** (gates): the produced code is executed against normal and adversarial input.
-- **reuse / native / hygiene** (gates): deterministic checks of the produced files.
+- **reuse / native / optimal / economy / sync / hygiene** (gates): deterministic checks of the produced files.
 - **ran_check**: parsed from the session transcript (did the agent run a test command).
 - **clarify score** (judge, 0-3): `judge.py`, fixed model at temp 0, published rubric, every
   verdict names which clarifications were asked and which were missed.
@@ -88,11 +90,13 @@ cd benchmarks/agentic
 python3 run.py --selftest            # prove the instruments, no API. run first.
 python3 judge.py --selftest-offline  # prove the judge gate logic, no API
 
-# live (spends API), all 8 tasks, three arms, Haiku, 3 runs each:
-python3 run.py --all --arms baseline,capybaraa,concise --models haiku --runs 3 --workers 6
+# live (spends API), all tasks, baseline vs capybaraa, Haiku, 3 runs each:
+python3 run.py --all --arms baseline,capybaraa --models haiku --runs 3 --workers 6
 python3 judge.py --run runs/<stamp>  # score the CLARIFY tier
 
+python3 judge.py --complete-run runs/<stamp>  # completeness of the open feature tasks
 python3 run.py --rescore runs/<stamp>   # recompute deterministic metrics offline, no API
+python3 chart.py runs/<stamp> ../../assets/benchmark.svg   # redraw the README chart from the run
 ```
 
 Agents only write code: `--strict-mcp-config` removes the browser, and `Bash` is blocked
@@ -113,11 +117,12 @@ the plugin's value, not only confirm it.
 - It **can** show, on real multi-file sessions, whether capybaraa asks before coding, reuses
   what exists, prefers native, replaces instead of piling on, runs its done-gate, and keeps
   its guards while staying lean.
-- It **cannot** claim production-readiness from eight tasks, and a deterministic safety check
+- It **cannot** claim production-readiness from this handful of tasks, and a deterministic safety check
   is a floor, not a security proof. The CLARIFY tier leans on an LLM judge, made auditable but
   still a model judging a model.
 
 ## Results
 
-Write each run up under `../results/` dated, with the per-task table and the activation column
-(proof the isolation held). Do not paste numbers into the top-level README until you have run it.
+Latest: [`../results/2026-06-25-sonnet-0.4.0.md`](../results/2026-06-25-sonnet-0.4.0.md) (Sonnet
+4.6, 3 runs). Write each run up under `../results/` dated, with the per-task table; only paste
+numbers into the top-level README once you have actually run it.

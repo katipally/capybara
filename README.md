@@ -22,25 +22,29 @@ It's the half of "good engineering" that agents skip: think before you type, the
 
 ## Before and after
 
-You ask for "add a settings page." A stock agent invents a `SettingsManager`, a `ConfigProvider`, three new files, a migration, and starts coding before it knows what settings you even mean.
+The ticket: "add a settings page."
 
-With capybaraa it clarifies before it writes code:
+**A stock agent** guesses what you meant and starts typing. It invents a `SettingsManager`, a `ConfigProvider`, three new files, and a migration, before it knows which settings you even want. Most of that is scaffolding for things you never asked for, and you only find out it guessed the spec wrong once it's all written.
+
+**Capybaraa** stops and asks the two questions that actually decide the design, with the choices drawn so the tradeoff is obvious at a glance:
 
 ```
-🦫 a couple of questions before I touch code:
+🦫 two questions before I touch code:
 
-   ┌─ settings ─┐
-   │ theme      │  persisted where?
-   │ ...        │  (localStorage / your API / both)
-   └────────────┘
+   ┌── settings ──┐
+   │ theme        │   store where?   local / your API / both
+   │ language     │   per-device, or synced to the account?
+   └──────────────┘
 
-   1. Just theme for now, or more fields coming?
-   2. Per-device, or synced to the account?
+   1. just these two fields now, or more coming?
+   2. per-device, or synced?
 
-   edge cases I'll handle: no-JS fallback, unknown stored value, first load.
+   edge cases I'll handle: no-JS fallback, unknown saved value, first load.
 ```
 
-Then it writes the smallest thing that answers your actual answers, and runs the check before it says it's done.
+Then it builds the smallest thing that fits your answers, runs the check, and stops. No `SettingsManager`, no files you didn't need, nothing left half-done.
+
+That is the whole pitch: **ask first, build only what the answer needs, prove it works, leave it clean.** The rest of this README is how it does that, and the numbers that show it.
 
 ## The seven pillars
 
@@ -52,15 +56,15 @@ Then it writes the smallest thing that answers your actual answers, and runs the
 
 | Pillar | What it enforces |
 |--------|------------------|
-| **CLARIFY** | Understand and explore first, then for non-trivial work clarify before coding: as many curated questions as the task actually needs (one or a dozen, never a fixed quota), a small ASCII sketch on the options, explicit edge cases. Don't guess the spec. |
+| **CLARIFY** | Understand and explore first, then ask what's left: as many curated questions as the task actually needs (one or a dozen, never a fixed quota). Any question with a shaped choice carries a small ASCII sketch on the options - near-mandatory, skipped only for a pure yes/no - plus explicit edge cases. Don't guess the spec. |
 | **LEAN** | The YAGNI ladder: does it need to exist? reuse what's here? stdlib? native? one line? then minimal code. |
-| **OPTIMAL** | Right data structure, best feasible time and space, no needless O(n²). |
+| **OPTIMAL** | Right data structure, best feasible time and space, no needless O(n^2). |
 | **ECONOMY** | Terse output, no useless comments or filler, minimal tokens, no over-exploring. |
 | **COMPLETE** | Finish terminally, root cause not symptom, and run the check before claiming done. |
 | **HYGIENE** | Refactor means replace, not pile-on. Delete dead code and stale comments, sanitize inputs, mark deliberate simplifications with a `capybaraa:` note, flag security. Out-of-scope finds get surfaced, not silently changed. |
 | **SYNC** | A change isn't done until everything that named the old shape catches up: docs, README, comments, tests, sibling callers, version strings. Update them in the same pass and delete the stale; `/capybaraa-sync` sweeps the whole repo on demand. |
 
-Above all seven sits the **conscious gate**: before any token-expensive move, capybaraa checks the spend is proportional to the ask — small task, just do it; scope unclear and a wrong guess is costly, ask one question first.
+Above all seven sits the **conscious gate**: before any token-expensive move, capybaraa checks the spend is proportional to the ask - small task, just do it; scope unclear and a wrong guess is costly, ask one question first.
 
 The point was never "fewest tokens." It's: do exactly what the task needs, understand it first, keep the repo honest about itself, and never cut validation, error handling, security, or accessibility. The code ends up small because it's necessary, not golfed.
 
@@ -96,37 +100,37 @@ So you never have to guess whether it is on, capybaraa signs its work. Every sub
 
 If you do not see the 🦫 badge, capybaraa is off (or the session predates install, start a new one). The statusline badge `[CAPYBARAA]` is the second tell.
 
-## Does it actually help? (numbers)
+## Does it actually help? (real numbers)
 
-The honest answer: capybaraa's value is behavioral, so it shows up in a real agent session, not a one-shot line count. The [agentic benchmark](benchmarks/agentic/) runs actual headless Claude Code sessions on seeded workspaces and scores each arm on the pillar it targets.
+Yes, and we measured it instead of asserting it. The [agentic benchmark](benchmarks/agentic/) runs real headless Claude Code sessions (`claude -p`) in throwaway workspaces and compares **capybaraa against the bare agent with no plugin**, one task per pillar. Same model, same task, the only difference is whether capybaraa is on, so any gap is the plugin.
 
-**Current single-mode run (Sonnet 4.6, n=2, [writeup](benchmarks/results/2026-06-25-sonnet-0.3.0.md)).** Three tasks, three arms, median lines of code (lower is leaner). Every arm stayed 100% correct, safe, and gate-passing:
+**Sonnet 4.6, 3 runs per cell.** Three things came out of it:
 
 <p align="center">
-  <img src="assets/benchmark-loc.svg" width="720" alt="Grouped bar chart, median lines of code per task (lower is leaner) for three arms on Sonnet 4.6, n=2. lean-native: baseline 1, capybaraa 1, ponytail 1 (irreducible, all tie). hygiene-replace: baseline 23.5, capybaraa 16.0, ponytail 9.0. feat-rating: baseline 46.0, capybaraa 25.5, ponytail 17.5. capybaraa is leaner than baseline on both reducible tasks; ponytail is leaner still.">
+  <img src="assets/benchmark.svg" width="720" alt="Two charts. Top: median lines of code per task, baseline vs capybaraa, lower is leaner. Star rating 38 vs 23 (-39%), CSV export 20 vs 15 (-25%), Cmd-K palette 89 vs 78 (-12%), rewrite CSV parser 17 vs 16 (-6%), fix failing test 4 vs 2 (-50%); every one scored fully complete 3 of 3. Bottom: CLARIFY judge 0 to 3, baseline 0 of 3, capybaraa 1.5 of 3; baseline built on assumptions including a 238-line SettingsManager while capybaraa wrote 0 lines and asked first; the 9 deterministic gates are 100% for both.">
 </p>
 
-```
- TASK (lower = leaner)   baseline   capybaraa   ponytail
- lean-native (native)        1          1          1      (irreducible, all tie)
- hygiene-replace             23.5       16.0       9.0    (capybaraa -32% vs baseline)
- feat-rating  (over-build)   46.0       25.5       17.5   (capybaraa -45% vs baseline)
-```
+**1. It asks before it builds.** Handed an underspecified ticket ("add user settings persistence to this app"), the bare agent dove straight into code on its own guesses, in one run writing a **238-line `SettingsManager`** for a spec nobody had pinned down. Capybaraa wrote **zero lines and asked the questions first**. On the CLARIFY judge (0-3, graded by a separate model with no plugin loaded) capybaraa scored **1.5 vs the baseline's 0**.
 
-The straight read: **capybaraa cuts over-build 32–45% against the bare baseline without dropping correctness, safety, or hygiene — but ponytail is leaner still on raw line count**, and capybaraa costs a little more time and money (the price of clarifying and checking). These three tasks are pure LOC, which is ponytail's home turf; capybaraa's pitch is leanness *without* cutting safety or completeness, plus the clarify-first behavior these LOC gates don't measure. n=2, one model, treat as directional.
+**2. It builds the same feature with less code.** On five tasks where there was real room to be leaner, capybaraa was **6-50% smaller** (a star-rating widget: 23 lines vs 38). Crucially, the completeness judge scored **every one fully complete, 3/3, for both arms**, so this is leaner, not less. It does cost a little more time and money per task, the price of asking and running the check.
 
-An earlier, broader **five-arm run** (Haiku 4.5, n=3, against the older two-mode build — [full writeup](benchmarks/results/2026-06-25-multiarm-haiku.md)) added the dimensions LOC can't see: on a 0–3 CLARIFY judge, capybaraa and ponytail tied at 2.0 (both ask first) ahead of baseline 1.5 and a yagni-oneliner arm at 0.0 that silently assumed the spec; capybaraa was the only arm that wrote tests (33–67% of runs, every other arm 0%); all arms stayed 100% safe against adversarial input. Every gate ships a good/bad reference validated before any API spend, and the judges are auditable (fixed model, published rubric). An older single-shot Sonnet 4.6 run is [here](benchmarks/results/2026-06-25-agentic-sonnet.md).
+**3. It never traded that for correctness.** On the nine deterministic gates (correct, safe, reuse a helper, use the native input, right data structure, no filler comments, keep docs in sync, replace not pile-on, run the test), **both arms passed 100%**. With a strong model the bare agent already nails these surgical tasks, and capybaraa holds that ceiling while adding the asking and the leanness on top.
 
-Run it yourself (needs the `claude` CLI and Python 3):
+The honest caveats: a handful of tasks on one model, so read it as directional, not a leaderboard. The CLARIFY tier leans on an LLM judge (made auditable: fixed model, published rubric, every verdict lists what was asked and missed), and a deterministic safety check is a floor, not a security proof.
+
+### Run it yourself
+
+You need the `claude` CLI and Python 3. From `benchmarks/agentic/`:
 
 ```bash
-cd benchmarks/agentic
-python3 run.py --selftest                                                  # prove the instruments, no API
-python3 run.py --all --arms baseline,capybaraa,concise --models sonnet --runs 3
-python3 judge.py --run runs/<stamp> && python3 judge.py --complete-run runs/<stamp>
+python3 run.py --selftest                                    # prove every scorer offline, spends nothing
+python3 run.py --all --arms baseline,capybaraa --models sonnet --runs 3   # the live run (uses the API)
+python3 judge.py --run runs/<stamp>           # CLARIFY score
+python3 judge.py --complete-run runs/<stamp>  # completeness of the open feature tasks
+python3 chart.py runs/<stamp> ../../assets/benchmark.svg   # redraw the chart above
 ```
 
-There's also an older single-shot LOC bench under [`benchmarks/`](benchmarks/) (`promptfooconfig.yaml`); it only measures lines, the one dimension capybaraa barely moves, so prefer the agentic one.
+`--selftest` runs first on purpose: every gate ships a good and a bad reference and must pass the good and catch the bad before a single API call. Full method, per-task table, and the isolation guarantees are in [`benchmarks/agentic/`](benchmarks/agentic/).
 
 ## Install
 
@@ -152,15 +156,14 @@ It never cuts validation, security, error handling, or accessibility, whatever t
 
 ## Commands
 
-The seven pillars are always on, there's no command to run them. Once installed, capybaraa applies to every task automatically. The slash commands are just for on/off, review, sync, debt, and help:
+The seven pillars are always on, there's no command to run them. Once installed, capybaraa applies to every task automatically. The slash commands are just for on/off, review, audit, sync, and help:
 
 | Command | What it does |
 |---------|--------------|
 | `/capybaraa [on \| off]` | Turn it on or off. No argument explains it and shows the current state. |
 | `/capybaraa-review` | Review the current diff against the seven pillars. Lists findings, doesn't edit. |
-| `/capybaraa-audit` | Scan the whole repo against the seven pillars. Ranked findings, doesn't edit. |
+| `/capybaraa-audit` | Scan the whole repo against the seven pillars, and harvest the `capybaraa:` deferral ledger. Ranked findings, doesn't edit. |
 | `/capybaraa-sync` | Fix drift between the code and its docs/tests/refs after a change. Lists, confirms, then updates and deletes stale. |
-| `/capybaraa-debt` | Harvest the `capybaraa:` deferral ledger (intentional simplifications). Lists, doesn't edit. |
 | `/capybaraa-help` | Quick reference card. |
 
 They're plugin skills, so they may show up namespaced as `/capybaraa:capybaraa` in the menu. Skills load at session start, so start a new session after installing.

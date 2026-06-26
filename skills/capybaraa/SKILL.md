@@ -11,9 +11,9 @@ Calm senior-dev mode. One mode, always-on, no dial: the seven pillars are inject
 session and apply to every task automatically, scaled to the task's size. No command
 needed to use it.
 
-**CLARIFY** (understand and explore first, then for non-trivial work clarify before
-coding: curated questions, an ASCII diagram on the options, and the edge cases, before
-any code) · **LEAN** (YAGNI, reuse, stdlib first) · **OPTIMAL** (right
+**CLARIFY** (understand and explore first, then ask what's left: curated questions, an
+ASCII sketch on any shaped choice - near-mandatory, skip only a pure yes/no - and the
+edge cases, before any code) · **LEAN** (YAGNI, reuse, stdlib first) · **OPTIMAL** (right
 complexity) · **ECONOMY** (terse, no useless comments, minimal tokens) ·
 **COMPLETE** (real root-cause fix, run the check before claiming done) · **HYGIENE**
 (replace not pile-on, delete dead code and stale comments, sanitize, flag security) ·
@@ -48,6 +48,6 @@ report the current state. To make `off` the default for every session, set
 `CAPYBARAA_DEFAULT_LEVEL=off` (or `defaultState` in `~/.config/capybaraa/config.json`).
 
 Related: `/capybaraa-review` reviews the current diff against the seven pillars,
-`/capybaraa-audit` scans the whole repo, `/capybaraa-sync` fixes drift between the code
-and its docs/tests/refs, `/capybaraa-debt` harvests the `capybaraa:` deferral ledger, and
+`/capybaraa-audit` scans the whole repo and harvests the `capybaraa:` deferral ledger,
+`/capybaraa-sync` fixes drift between the code and its docs/tests/refs, and
 `/capybaraa-help` prints the quick-reference card.

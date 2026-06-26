@@ -22,6 +22,7 @@ assert.match(getInstructions('on'), /🦫 capybaraa/, 'visible signal badge ship
 assert.doesNotMatch(getInstructions('on'), /🦫 capybaraa ·/, 'badge has no mode suffix');
 assert.match(getInstructions('on'), /capybaraa:/, 'debt-marker convention ships in CORE');
 assert.match(getInstructions('on'), /capybaraa-sync/, 'the sync reflex ships in CORE');
+assert.match(getInstructions('on'), /ASCII sketch on the options/, 'the ASCII-on-questions rule ships in CORE');
 
 // state normalization: legacy mode values count as on, only "off" is off
 assert.strictEqual(normalizeState('off'), 'off');
@@ -50,11 +51,14 @@ assert.ok(isActivation('capybaraa on'));
 assert.ok(!isActivation('we should capybaraa on the next sprint maybe'), 'activation in prose does NOT fire');
 
 // the slash skills exist (Claude Code surfaces skills, not commands/*.toml)
-for (const s of ['capybaraa', 'capybaraa-help', 'capybaraa-review', 'capybaraa-audit', 'capybaraa-sync', 'capybaraa-debt']) {
+for (const s of ['capybaraa', 'capybaraa-help', 'capybaraa-review', 'capybaraa-audit', 'capybaraa-sync']) {
   const p = path.join(__dirname, '..', 'skills', s, 'SKILL.md');
   assert.ok(fs.existsSync(p), `missing skill ${s}`);
   assert.ok(fs.readFileSync(p, 'utf8').startsWith('---'), `skill ${s} needs frontmatter`);
 }
+// debt is merged into audit: the standalone skill is gone, audit harvests the ledger
+assert.ok(!fs.existsSync(path.join(__dirname, '..', 'skills', 'capybaraa-debt', 'SKILL.md')), 'capybaraa-debt skill removed');
+assert.match(fs.readFileSync(path.join(__dirname, '..', 'skills', 'capybaraa-audit', 'SKILL.md'), 'utf8'), /DEFERRALS/, 'audit harvests the deferral ledger');
 
 // the detailed reference exists and names all seven pillars
 const ref = fs.readFileSync(path.join(__dirname, '..', 'references', 'principles.md'), 'utf8');

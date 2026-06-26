@@ -1,6 +1,6 @@
 {
   "name": "capybaraa",
-  "version": "0.3.2",
+  "version": "0.4.0",
   "description": "Calm senior-dev mode for Claude Code: one always-on mode that clarifies before code (curated ASCII questions and edge cases), stays lean, writes optimal code, spends tokens consciously, finishes terminally, and leaves the repo clean. A visible badge so you always know it is on.",
   "author": { "name": "Yashwanth Reddy" },
   "homepage": "https://github.com/katipally/capybaraa",

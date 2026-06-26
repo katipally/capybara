@@ -32,24 +32,24 @@ Detailed guidance: [`references/principles.md`](../../references/principles.md) 
    - **config & metadata**: version strings across manifests, env-var names, keywords
 3. For every gap, emit ONE line:
 
-   `path:line — <what's stale> drifted from <the change>. <the fix>.`
+   `path:line - <what's stale> drifted from <the change>. <the fix>.`
 
 4. **Confirm before applying.** Show the list, say what you'll change and what you'll
-   delete, and wait for a go-ahead — unless the user already said "just sync it". For a
+   delete, and wait for a go-ahead - unless the user already said "just sync it". For a
    one-line obvious propagation, just do it and note it; the confirm is for the big or
    risky sweeps.
 5. Apply in one pass: update the live references, **delete** the stale ones (don't leave
-   the old line beside the new — HYGIENE), and re-run the repo's check if one exists.
+   the old line beside the new - HYGIENE), and re-run the repo's check if one exists.
 6. End with a one-line tally: `N references synced, M stale removed.` or
    `In sync. Nothing drifted.`
 
 ## Output shape
 
 ```
-README.md:140 — "two modes lean/deep" drifted from the single-mode change. Rewrite to on/off.
-plugin.json:3 — version 0.2.4 drifted from the 0.3.0 bump. Bump to match.
-test/auth.test.js:22 — asserts getLevel(), renamed to getState(). Update the call.
-src/legacy.js:1 — re-exports parseV1, deleted in this change. Remove the dead re-export.
+README.md:140 - "two modes lean/deep" drifted from the single-mode change. Rewrite to on/off.
+plugin.json:3 - version 0.2.4 drifted from the 0.3.0 bump. Bump to match.
+test/auth.test.js:22 - asserts getLevel(), renamed to getState(). Update the call.
+src/legacy.js:1 - re-exports parseV1, deleted in this change. Remove the dead re-export.
 verdict: 4 references drift. Apply? (3 updates, 1 deletion)
 ```
 

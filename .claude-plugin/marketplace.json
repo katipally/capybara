@@ -6,8 +6,8 @@
   "plugins": [
     {
       "name": "capybaraa",
-      "description": "Seven pillars (clarify, lean, optimal, economy, complete, hygiene, sync) plus a conscious token gate, always-on via hooks; slash commands /capybaraa, /capybaraa-review, /capybaraa-audit, /capybaraa-sync, /capybaraa-debt, and /capybaraa-help.",
-      "version": "0.3.2",
+      "description": "Seven pillars (clarify, lean, optimal, economy, complete, hygiene, sync) plus a conscious token gate, always-on via hooks; slash commands /capybaraa, /capybaraa-review, /capybaraa-audit, /capybaraa-sync, and /capybaraa-help.",
+      "version": "0.4.0",
       "category": "development",
       "keywords": ["planning", "yagni", "minimalism", "code-quality"],
       "source": "./"

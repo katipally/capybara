@@ -9,17 +9,17 @@ plugin's effect, not the model being chatty.
       Validate every deterministic instrument offline (good ref passes, bad ref is caught).
       No API, no spend. Run this first, always.
 
-  python3 run.py --all --arms baseline,capybaraa,concise --models haiku --runs 3
+  python3 run.py --all --arms baseline,capybaraa --models haiku --runs 3
       Live run (spends API). Workspaces kept under runs/<stamp>/ for inspection.
 
   python3 run.py --rescore runs/<stamp>
       Recompute metrics from kept workspaces. No API.
 
-Isolation (the lesson ponytail learned the hard way): capybaraa is a SessionStart-hook
-plugin. To test exactly one arm we (1) exclude the user's global plugins with
---setting-sources project,local, (2) load capybaraa for its arm only via --plugin-dir, and
-(3) give every cell its OWN CLAUDE_CONFIG_DIR so a stale "off" flag in the real ~/.claude
-can't silently neuter the treatment. The capybaraa arm runs with the flag on.
+Isolation: capybaraa is a SessionStart-hook plugin. To test exactly one arm we (1) exclude
+the user's global plugins with --setting-sources project,local, (2) load capybaraa for its
+arm only via --plugin-dir, and (3) pin its activation flag for the run so a stale "off" in
+the real ~/.claude can't silently neuter the treatment. The baseline arm loads no plugin,
+so any difference between the two arms is capybaraa's effect, not the model being chatty.
 """
 import argparse, concurrent.futures, datetime, json, os, re, shutil, statistics, subprocess, sys, tempfile
 from collections import defaultdict
@@ -32,24 +32,22 @@ RUNS_DIR = Path(__file__).resolve().parent / "runs"
 
 MODELS = {"haiku": "claude-haiku-4-5-20251001", "sonnet": "claude-sonnet-4-6", "opus": "claude-opus-4-8"}
 
-# Arms, ponytail-style. Three kinds:
-#   bare   - the unaided agent (the fair baseline / "regular")
-#   plugin - a real SessionStart-hook plugin loaded via --plugin-dir; `src` resolves the dir,
-#            `flag`/`level` pin its activation flag for the run (restored after)
-#   prompt - a system-prompt instruction via --append-system-prompt (no plugin)
-# capybaraa is the dev repo; ponytail/caveman come from the installed ponytail plugin so the
-# comparison is against what those skills actually ship.
+# Arms. Three kinds:
+#   bare   - the unaided agent (the fair baseline / "regular"), the only thing capybaraa is
+#            compared against
+#   plugin - capybaraa itself, loaded via --plugin-dir; `src` resolves the dir, `flag`/`level`
+#            pin its activation flag for the run (restored after)
+#   prompt - a generic system-prompt instruction via --append-system-prompt (no plugin); these
+#            are optional reference points, not part of the headline baseline-vs-capybaraa read
 ARMS = {
     "baseline":       {"kind": "bare"},
     "regular":        {"kind": "bare"},                                   # alias for baseline
     "capybaraa":      {"kind": "plugin", "src": "capybaraa", "flag": ".capybaraa-active", "level": "on"},
-    "ponytail":       {"kind": "plugin", "src": "ponytail",  "flag": ".ponytail-active",  "level": "full"},
-    "caveman":        {"kind": "prompt", "text": None},                   # filled from caveman-SKILL.md
     "yagni":          {"kind": "prompt", "text": "Follow YAGNI principles."},
     "yagni-oneliner": {"kind": "prompt", "text": "Follow YAGNI principles, and prefer one-liner solutions."},
     "concise":        {"kind": "prompt", "text": "Be concise. Build the minimal thing that works and stop."},
 }
-DEFAULT_ARMS = ("baseline", "capybaraa", "concise")
+DEFAULT_ARMS = ("baseline", "capybaraa")
 
 CELL_TIMEOUT = 300
 CODE_EXT = {".py", ".js", ".ts", ".jsx", ".tsx", ".html", ".css", ".go", ".rs", ".java", ".rb"}
@@ -60,36 +58,22 @@ NO_RUN = ("Write the implementation and stop. Do not start a dev server, install
           "run a database, or open a browser. Only the code you leave behind is measured.")
 NO_RUN_TESTS_OK = ("Make the change and verify it the way you normally would. Do not start a dev "
                    "server, install dependencies, or open a browser. Running the test suite is fine.")
+# CLARIFY (judge_only) measures whether the agent asks before coding, so it must NOT be told
+# "only the code is measured" (that punishes asking). Neutral: respond however you would, just
+# don't run anything live.
+NO_RUN_NEUTRAL = ("Respond in a single message as you normally would. Do not start a dev server, "
+                  "install dependencies, run a database, or open a browser.")
 
 
 def _resolve_plugin(src):
-    """capybaraa -> the dev repo (override with CAPYBARAA_PLUGIN_DIR); any other name -> the latest
-    version under ~/.claude/plugins/cache/<name>/<name>/ (override with <NAME>_PLUGIN_DIR).
-    Returns None if not installed, so a missing ponytail can't block a capybaraa-only run."""
+    """capybaraa -> the dev repo (override with CAPYBARAA_PLUGIN_DIR). capybaraa is the only
+    plugin arm; returns None only if the override points nowhere."""
     env = os.environ.get(f"{src.upper()}_PLUGIN_DIR")
     if env:
         return env
     if src == "capybaraa":
         return str(ROOT)
-    base = Path.home() / ".claude" / "plugins" / "cache" / src / src
-    versions = sorted(p for p in base.glob("*") if p.is_dir()) if base.exists() else []
-    return str(versions[-1]) if versions else None
-
-
-_CAVEMAN_FALLBACK = ("Talk like a caveman: very few words, no filler. Write the smallest code that "
-                     "works and stop. No abstractions, no boilerplate.")
-
-def _caveman_text():
-    """Use the real caveman skill from the installed ponytail plugin if present, else a short fallback."""
-    d = _resolve_plugin("ponytail")
-    if d:
-        p = Path(d) / "benchmarks" / "arms" / "caveman-SKILL.md"
-        if p.exists():
-            try:
-                return p.read_text(encoding="utf-8")
-            except Exception:
-                pass
-    return _CAVEMAN_FALLBACK
+    return None
 
 
 def _arm_append(arm):
@@ -97,7 +81,7 @@ def _arm_append(arm):
     spec = ARMS[arm]
     if spec["kind"] != "prompt":
         return None
-    return spec["text"] if spec.get("text") else _caveman_text()
+    return spec["text"]
 
 
 def _flag_path(name=".capybaraa-active"):
@@ -224,7 +208,12 @@ def run_cell(task_id, arm, model, workdir: Path):
     if spec["kind"] == "plugin":
         env[f"{spec['src'].upper()}_DEFAULT_LEVEL"] = spec["level"]   # belt-and-suspenders for activation
 
-    append = NO_RUN_TESTS_OK if task.get("allow_bash") else NO_RUN
+    if task.get("judge_only"):
+        append = NO_RUN_NEUTRAL
+    elif task.get("allow_bash"):
+        append = NO_RUN_TESTS_OK
+    else:
+        append = NO_RUN
     arm_text = _arm_append(arm)
     if arm_text:
         append = arm_text + "\n\n" + append
@@ -347,7 +336,7 @@ def aggregate(results):
                         "wrote_code_rate": rate("wrote_code")})
         else:
             row.update({"correct_rate": rate("correct"), "safe_rate": rate("safe")})
-            for extra in ("reuse", "native", "hygiene", "ran_check"):
+            for extra in ("reuse", "native", "optimal", "economy", "sync", "hygiene", "ran_check"):
                 if any(extra in c for c in cells):
                     row[extra + "_rate"] = rate(extra)
         rows.append(row)
@@ -369,7 +358,8 @@ def print_table(rows):
                 bits += [f"LOCmax={r.get('total_loc_max')}", f"built%={r.get('wrote_code_rate')}"]
             else:
                 bits += [f"correct%={r.get('correct_rate')}", f"safe%={r.get('safe_rate')}"]
-                for extra in ("reuse_rate", "native_rate", "hygiene_rate", "ran_check_rate"):
+                for extra in ("reuse_rate", "native_rate", "optimal_rate", "economy_rate",
+                              "sync_rate", "hygiene_rate", "ran_check_rate"):
                     if extra in r:
                         bits.append(f"{extra.replace('_rate','')}%={r[extra]}")
             bits.append(f"tests%={r.get('wrote_tests_rate')}")

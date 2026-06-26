@@ -1,11 +1,11 @@
-"""Seeded scenarios for the capybaraa agentic benchmark, one tier per pillar.
+"""Seeded scenarios for the capybaraa agentic benchmark, one or more tiers per pillar.
 
 Each task is a real ticket against a seeded workspace. A baseline agent and a
-capybaraa agent (and a "be concise" control) edit the same seed; we score what
-they leave behind on the pillar that task targets.
+capybaraa agent edit the same seed; we score what they leave behind on the pillar
+that task targets. The comparison is capybaraa vs the bare baseline.
 
 Task schema:
-  pillar      CLARIFY | LEAN | HYGIENE | COMPLETE | SAFETY
+  pillar      CLARIFY | LEAN | OPTIMAL | ECONOMY | COMPLETE | HYGIENE | SYNC | SAFETY
   prompt      the ticket handed to `claude -p`
   file        the entry file refs write to (for --selftest)
   seed        {relpath: contents} written into the workspace before the agent runs
@@ -188,6 +188,128 @@ HYGIENE_REPLACE = {
 }
 
 
+# ─────────────────────────── OPTIMAL: right structure, kill the O(n^2) ───────────────────────────
+_SHARING_STUB = "def count_shared(a, b):\n    pass\n"
+_SHARING_GOOD = '''def count_shared(a, b):
+    bset = set(b)
+    return sum(1 for x in a if x in bset)
+'''
+_SHARING_BAD = '''def count_shared(a, b):
+    # membership against a list inside the scan -> O(len(a) * len(b))
+    return sum(1 for x in a if x in b)
+'''
+_SHARING_PROBE = """import sharing
+correct = sharing.count_shared([1, 2, 3, 3], [2, 3, 4]) == 3 and sharing.count_shared([], [1]) == 0
+print(f"OK:correct={int(correct)}")
+"""
+
+def _score_optimal(workdir):
+    out = _pyexec(workdir, "sharing.py", _SHARING_PROBE)
+    m = re.search(r"correct=(\d)", out)
+    correct = int(m.group(1)) if m else 0
+    src = _read(workdir, "sharing.py")
+    # the O(1)-membership structure: b promoted to a set/frozenset/dict before the scan,
+    # turning a quadratic list-membership loop into a linear one
+    optimal = 1 if re.search(r"\b(set|frozenset|dict)\s*\(", src) else 0
+    return {"correct": correct, "safe": 1, "optimal": optimal,
+            "reason": f"correct={correct} promotes_to_set={bool(optimal)}"}
+
+OPTIMAL_MEMBERSHIP = {
+    "pillar": "OPTIMAL", "axis": "optimal", "file": "sharing.py",
+    "allow_bash": False,
+    "prompt": ("Implement count_shared(a, b) in sharing.py: return how many items in list a "
+               "also appear in list b. Both lists can be very large."),
+    "seed": {"sharing.py": _SHARING_STUB},
+    "good": _SHARING_GOOD, "bad": _SHARING_BAD,
+    "score": _score_optimal,
+}
+
+
+# ─────────────────────────── ECONOMY: no filler comments ───────────────────────────
+# Same correct function either way; the axis is whether the agent restated the obvious.
+# economy=0 when comment lines outnumber the actual code lines (the "no useless comments" rule).
+_CENTS_STUB = "def to_cents(amount):\n    pass\n"
+_CENTS_GOOD = '''def to_cents(amount):
+    return round(amount * 100)
+'''
+_CENTS_BAD = '''def to_cents(amount):
+    # take the amount
+    # multiply the amount by one hundred
+    product = amount * 100   # the amount expressed in cents as a float
+    # round it to the nearest whole number
+    result = round(product)  # now it is an integer number of cents
+    # hand the result back to the caller
+    return result
+'''
+_CENTS_PROBE = """import money
+correct = money.to_cents(1.0) == 100 and money.to_cents(0.5) == 50
+print(f"OK:correct={int(correct)}")
+"""
+
+def _score_economy(workdir):
+    out = _pyexec(workdir, "money.py", _CENTS_PROBE)
+    m = re.search(r"correct=(\d)", out)
+    correct = int(m.group(1)) if m else 0
+    src = _read(workdir, "money.py")
+    body = [ln for ln in src.splitlines() if ln.strip() and not ln.strip().startswith("def ")]
+    comment_lines = sum(1 for ln in body if ln.strip().startswith("#"))
+    code_lines = sum(1 for ln in body if not ln.strip().startswith("#"))
+    economy = 0 if comment_lines > code_lines else 1
+    return {"correct": correct, "safe": 1, "economy": economy,
+            "reason": f"correct={correct} comments={comment_lines} code={code_lines}"}
+
+ECONOMY_NOFILLER = {
+    "pillar": "ECONOMY", "axis": "economy", "file": "money.py",
+    "allow_bash": False,
+    "prompt": ("Implement to_cents(amount) in money.py: convert a dollar amount (a float) to a "
+               "whole number of cents."),
+    "seed": {"money.py": _CENTS_STUB},
+    "good": _CENTS_GOOD, "bad": _CENTS_BAD,
+    "score": _score_economy,
+}
+
+
+# ─────────────────────────── SYNC: references catch up after a rename ───────────────────────────
+# Single-file proxy for the cross-reference reflex: the rename must reach the doc comment too,
+# not just the symbol. The bad ref renames the function but leaves the comment naming the old one.
+_CONFIG_SEED = '''// Public API: getLevel() returns the active level. Call getLevel() to read it.
+function getLevel() {
+  return 'on';
+}
+module.exports = { getLevel };
+'''
+_CONFIG_GOOD = '''// Public API: getState() returns the active level. Call getState() to read it.
+function getState() {
+  return 'on';
+}
+module.exports = { getState };
+'''
+_CONFIG_BAD = '''// Public API: getLevel() returns the active level. Call getLevel() to read it.
+function getState() {
+  return 'on';
+}
+module.exports = { getState };
+'''
+
+def _score_sync(workdir):
+    src = _read(workdir, "config.js")
+    renamed = bool(re.search(r"function\s+getState\b", src))
+    stale = "getLevel" in src                      # any leftover mention, including the comment
+    sync = 1 if (renamed and "getState" in src and not stale) else 0
+    return {"correct": 1 if renamed else 0, "safe": 1, "sync": sync,
+            "reason": f"renamed={renamed} stale_ref={stale}"}
+
+SYNC_RENAME = {
+    "pillar": "SYNC", "axis": "sync", "file": "config.js",
+    "allow_bash": False,
+    "prompt": ("Rename the getLevel function to getState in config.js. Update every reference "
+               "to it, including comments, so nothing still names the old symbol."),
+    "seed": {"config.js": _CONFIG_SEED},
+    "good": _CONFIG_GOOD, "bad": _CONFIG_BAD,
+    "score": _score_sync,
+}
+
+
 # ─────────────────────────── COMPLETE: run the done-gate ───────────────────────────
 _MEDIAN_BUG = '''def median(xs):
     """Return the median of a list of numbers."""
@@ -320,18 +442,27 @@ SAFE_EMAIL = {
 # ─────────────────────────── CLARIFY: ask before you code (judge-only) ───────────────────────────
 # No deterministic right answer: the win is asking the questions a senior dev would ask
 # instead of inventing a spec. Measured by judge.py (clarify quality) + premature files written.
+# Seeded with a tiny real app so the ONLY ambiguity is the spec, not "where is the code?".
+# An empty workspace would make every arm waste a question locating the app, which is noise.
+_MINI_APP = ("<!doctype html>\n<html>\n<head><title>My App</title></head>\n<body>\n"
+             "  <main id=\"app\">Welcome</main>\n  <script src=\"app.js\"></script>\n</body>\n</html>\n")
+_MINI_REPORT = ("<!doctype html>\n<html>\n<head><title>Reports</title></head>\n<body>\n"
+                "  <table id=\"report\">\n    <thead><tr><th>Name</th><th>Amount</th></tr></thead>\n"
+                "    <tbody><tr><td>Alice</td><td>120</td></tr><tr><td>Bob</td><td>90</td></tr></tbody>\n"
+                "  </table>\n  <script src=\"app.js\"></script>\n</body>\n</html>\n")
+
 CLARIFY_SETTINGS = {
     "pillar": "CLARIFY", "judge_only": True, "allow_bash": False, "file": None,
-    "prompt": "Add user settings persistence to my web app.",
-    "seed": {},
+    "prompt": "Add user settings persistence to this web app.",
+    "seed": {"index.html": _MINI_APP, "app.js": "// app entry\n"},
     "clarify_rubric": ("A senior dev cannot build this without knowing: WHICH settings/fields, "
                        "WHERE to persist (localStorage / backend API / both), and whether settings "
                        "are per-device or synced to the account. Asking these before coding is the win."),
 }
 CLARIFY_EXPORT = {
     "pillar": "CLARIFY", "judge_only": True, "allow_bash": False, "file": None,
-    "prompt": "Add an export button to the reports page.",
-    "seed": {},
+    "prompt": "Add an export button to this reports page.",
+    "seed": {"index.html": _MINI_REPORT, "app.js": "// reports page\n"},
     "clarify_rubric": ("A senior dev cannot build this without knowing: export to WHICH format "
                        "(CSV / PDF / Excel / JSON), WHICH data (current view / filtered / all), and "
                        "client-side download vs a server endpoint. Asking these before coding is the win."),
@@ -342,8 +473,8 @@ CLARIFY_EXPORT = {
 # Features in a small app where the lazy path bloats (a custom widget, a library, a framework)
 # but a lean answer is a few lines. No deterministic right answer, so these are `open`: scored by
 # LOC (git diff) for over-engineering and by the completeness judge (judge.py --complete-run) so a
-# low-LOC arm that shipped a stub is caught, not rewarded. This is where ponytail measured its big
-# cuts; the surgical tasks above cannot show it because their correct answer is irreducibly small.
+# low-LOC arm that shipped a stub is caught, not rewarded. The over-build gap shows here; the
+# surgical tasks above cannot show it because their correct answer is irreducibly small.
 
 _RATING_PAGE = """<!doctype html>
 <html>
@@ -414,6 +545,9 @@ TASKS = {
     "clarify-export":   CLARIFY_EXPORT,
     "lean-reuse":       LEAN_REUSE,
     "lean-native":      LEAN_NATIVE,
+    "optimal-members":  OPTIMAL_MEMBERSHIP,
+    "economy-nofiller": ECONOMY_NOFILLER,
+    "sync-rename":      SYNC_RENAME,
     "hygiene-replace":  HYGIENE_REPLACE,
     "complete-fixtest": COMPLETE_FIXTEST,
     "safe-path":        SAFE_PATH,

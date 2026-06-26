@@ -17,8 +17,8 @@ Render this card, change nothing.
           subagents, full clarify, long output) check the spend is proportional.
           small task -> just do it. scope unclear & costly -> ask ONE question first.
 
- PILLARS  CLARIFY  explore first, then clarify before coding: curated
-                   questions + ASCII on the options + edge cases
+ PILLARS  CLARIFY  explore first, then ask what's left: curated questions,
+                   ASCII on any shaped choice (near-mandatory), edge cases
           LEAN     YAGNI · reuse · stdlib first
           OPTIMAL  right data structure · best feasible complexity
           ECONOMY  terse · no useless comments · minimal tokens
@@ -30,9 +30,8 @@ Render this card, change nothing.
 
  SLASH    /capybaraa [on|off]                turn it on or off
           /capybaraa-review                  review the diff against the pillars
-          /capybaraa-audit                   scan the whole repo against the pillars
+          /capybaraa-audit                   scan the whole repo + deferral ledger
           /capybaraa-sync                    fix drift: code vs its docs/tests/refs
-          /capybaraa-debt                    harvest the capybaraa: deferral ledger
           /capybaraa-help                    this card
 
  DETAIL   full per-pillar guidance: references/principles.md

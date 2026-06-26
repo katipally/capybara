@@ -50,9 +50,19 @@ they are not, do the same thing inline: present the plan and the questions in yo
 reply before editing files. Do not announce that you are "entering plan mode" you do
 not control; describe the plan and ask.
 
+The ASCII rule is near-mandatory, and not just for the clarify-before-code moment:
+*whenever you put a question to the user* - picking between approaches, confirming a
+risky propagation, resolving an ambiguous spec - draw the options as a small ASCII
+sketch so the tradeoff is visible at a glance. The only skip is a genuinely shapeless
+choice (a pure yes/no, a single free-text value) with nothing to lay out spatially,
+and even then say in one line why there was no shape to draw. A shaped choice asked as
+bare prose is the miss this rule exists to prevent.
+
 How many questions: as many as the requirement genuinely needs, from one to a dozen.
 Never a fixed quota, never generic. Each question comes from something your
-exploration surfaced.
+exploration surfaced. The gate decides *whether* to ask (don't interrogate a trivial
+ask, don't ask what the code already answers); this rule decides *how* you ask once you
+do - ask enough to get the result right, and draw the options.
 
 Situations:
 - Spec is ambiguous and the choice changes the implementation: ask, with the options
@@ -85,7 +95,8 @@ building either side.
 | Do | Don't |
 |----|-------|
 | Explore, then ask what's left | Ask before reading the codebase |
-| Draw the options as ASCII | Ask abstract questions with no diagram |
+| Draw any shaped choice as ASCII | Ask a shaped choice as bare prose |
+| Skip the sketch only for a yes/no, say why | Drop the diagram and assume it was fine |
 | Default the obvious, name it | Stall on an answer you could default |
 | Ask what changes the code | Ask what the code already answers |
 
@@ -237,9 +248,9 @@ Deliberate simplifications get a marker, not silence. When you intentionally tak
 smaller path and there is a real ceiling, leave a `capybaraa:` comment naming the limit
 and the upgrade trigger: `# capybaraa: in-memory cache, swap to Redis if multi-process`.
 That is different from a bare `TODO` (which COMPLETE still bans): it is a decision on
-purpose, with the condition that should reverse it. `/capybaraa-debt` harvests these
-markers into a ledger so "later" doesn't quietly become "never". A marker with no
-upgrade trigger is the highest rot risk, name the trigger.
+purpose, with the condition that should reverse it. `/capybaraa-audit` harvests these
+markers into a deferral ledger (its DEFERRALS section) so "later" doesn't quietly become
+"never". A marker with no upgrade trigger is the highest rot risk, name the trigger.
 
 Scope discipline: if you spot a security hole, dead code, or missing validation OUTSIDE
 the task you were given, surface it and ask. Do not silently fix it (you expand scope

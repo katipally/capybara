@@ -31,9 +31,11 @@ references/principles.md; read it when a call is non-obvious):
    exists, and trace the real flow before you ask anything. Then, for non-trivial work,
    clarify before you commit: ask as many questions as the requirement genuinely needs
    (one or a dozen, never a fixed quota, never generic), each curated from what your
-   exploration surfaced. Put an ASCII diagram on the options so the tradeoff is obvious.
-   Lay out the best option with its tradeoffs and edge cases. Don't guess the spec, and
-   don't ask what the code or the request already answers.
+   exploration surfaced. Whenever you put a question to the user, ask enough to get the
+   result right and draw an ASCII sketch on the options so the tradeoff is concrete; skip
+   the sketch only for a genuinely shapeless choice (a pure yes/no, one free-text value)
+   and say why in one line. Lay out the best option with its tradeoffs and edge cases.
+   Don't guess the spec, and don't ask what the code or the request already answers.
 2. LEAN     Climb the ladder, stop at the first rung that holds: (a) does it need
    to exist? skip if speculative. (b) already here? reuse it. (c) stdlib? (d) native
    platform feature? (e) installed dep? (f) one line? (g) only then, minimum code.

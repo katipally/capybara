@@ -4,10 +4,12 @@ description: >
   Scan the whole repository against capybaraa's seven pillars: clarify, lean, optimal,
   economy, complete, hygiene, sync. A ranked, codebase-wide report of over-engineering,
   dead code, bad complexity, filler, unfinished work, missing validation, and docs/tests
-  out of sync with the code. One line per finding, biggest impact first, lists only, does
-  not apply fixes.
+  out of sync with the code, plus a DEFERRALS ledger of every intentional `capybaraa:`
+  simplification and its rot risk. One line per finding, biggest impact first, lists only,
+  does not apply fixes.
   Use when the user says "audit this repo against the pillars", "capybaraa audit",
-  "/capybaraa-audit", "what can I delete from this repo", or "find the bloat".
+  "/capybaraa-audit", "what can I delete from this repo", "find the bloat", "show the
+  deferral ledger", or "what did we simplify on purpose".
 license: MIT
 ---
 
@@ -30,8 +32,14 @@ Detailed guidance on each pillar: `references/principles.md`.
 
 3. Rank the findings by impact, biggest first: the abstraction nobody uses, the
    dependency a few lines would replace, the dead module, before the stray comment.
-4. Group nothing, pad nothing. End with a one-line verdict naming the top one to three
-   things to delete or fix.
+4. **Harvest the deferral ledger.** Grep the repo for intentional `capybaraa:` markers
+   (`grep -rnE '(#|//|--|;) ?capybaraa:'`, same skip list as step 1). Each marks a
+   deliberate simplification with a ceiling and an upgrade trigger (HYGIENE convention).
+   List them in a DEFERRALS block, **no-trigger markers first** (highest rot risk -
+   nothing will ever flip them), and if a marker's ceiling is already breached, say so on
+   its line: that's the one to act on now.
+5. Group nothing, pad nothing. End with a one-line verdict naming the top one to three
+   things to delete or fix, and the deferral count.
 
 ## Tags (one per pillar, same vocabulary as /capybaraa-review)
 
@@ -60,13 +68,21 @@ src/legacy/parseV1.js:1: hygiene: whole module dead since v2 parser landed, no c
 src/api/handler.js:55: hygiene: req.body.id passed straight into the query, no validation. Guard it at the boundary.
 src/report/build.js:30: optimal: findUser called inside the row loop, O(n^2). Build a Map of users once.
 README.md:12: sync: documents a --verbose flag removed in v3, no longer parsed. Delete the line.
-verdict: delete CacheManager and parseV1, drop moment. That's the bulk of the bloat.
+
+DEFERRALS (capybaraa: ledger, rot risk first)
+src/cache.js:12 - in-memory cache, no eviction. ceiling: single process. upgrade: none given.
+src/auth.js:40 - global rate-limit lock. ceiling: one bucket for all accounts. upgrade: per-account if throughput matters.
+api/upload.py:88 - 10MB hardcoded size cap. ceiling: 10MB (already breached, a user hit it). upgrade: make configurable.
+
+verdict: delete CacheManager and parseV1, drop moment. 3 deferrals, 1 with no trigger (cache.js:12 - name one).
 ```
+
+If there are no markers, the DEFERRALS block is one line: `DEFERRALS: none. Clean ledger.`
 
 ## Boundaries
 
-Lists findings only, does not edit files. Over-engineering, mess, dead code, and
-unfinished work are in scope. Correctness bugs, security exploits, and performance
-profiling are not, that is what `/code-review` and `/security-review` are for. If you
-spot a real security hole while reading, flag it in one line and tell the user to run
-`/security-review`. Do not fix it silently.
+Lists findings only, does not edit files. Over-engineering, mess, dead code, unfinished
+work, and the `capybaraa:` deferral ledger are in scope. Correctness bugs, security
+exploits, and performance profiling are not, that is what `/code-review` and
+`/security-review` are for. If you spot a real security hole while reading, flag it in one
+line and tell the user to run `/security-review`. Do not fix it silently.
