@@ -6,7 +6,7 @@ Date: 2026-06-26. Model: `claude-sonnet-4-6`. One batch, three clear build tasks
 This run measures capybaraa **after the ruleset was cut to ponytail size**. The old core
 injected ~1,500 tokens of seven-pillar prose plus a badge-and-sign-off ceremony every turn,
 which is the irony of a lean tool: it tied the bare agent on output tokens and cost ~16% more.
-The rewrite is the lean ladder plus five habits (~440 tokens), a one-glyph badge, no sign-off,
+The rewrite is the lean ladder plus five habits (~500 tokens), a one-glyph badge, no sign-off,
 no done-gate. The question here: does the leaner capybaraa actually spend fewer tokens than a
 bare agent?
 

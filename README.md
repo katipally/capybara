@@ -22,9 +22,6 @@
 <p align="center">
   <strong>~10% fewer output tokens</strong> and <strong>~30% less code</strong> than a bare agent, fully complete &middot; plus the questions ponytail skips
 </p>
-<p align="center">
-  <sub>Sonnet 4.6, four arms (bare agent, caveman, ponytail, capybaraa), n=2, directional. <a href="https://github.com/DietrichGebert/ponytail">ponytail</a> is leaner still on pure lines; capybaraa keeps validation and accessibility and adds an ASCII question when the spec is ambiguous. <a href="benchmarks/results/2026-06-26-sonnet-lean.md">full numbers</a> &middot; <a href="benchmarks/agentic/">method</a></sub>
-</p>
 
 You know the type. Unbothered, has seen every framework rise and fall and didn't migrate to any of them. You hand over a vague ticket and fifty lines of someone's first draft. He reads it, asks the two questions that actually matter, draws a little box-and-arrow on a napkin, and replaces the whole thing with the part you needed.
 
@@ -82,7 +79,7 @@ Honest caveats: a small task set (n=2, three build tasks) on one model, so read 
 
 ## How it works
 
-One source of truth, [`principles/build-instructions.js`](principles/build-instructions.js), injected every session by a `SessionStart` hook and into every subagent by a `SubagentStart` hook. Whether it's on lives in a flag file (`~/.claude/.capybaraa-active`). It is small on purpose, about 440 tokens, so the always-on cost stays near zero.
+One source of truth, [`principles/build-instructions.js`](principles/build-instructions.js), injected every session by a `SessionStart` hook and into every subagent by a `SubagentStart` hook. Whether it's on lives in a flag file (`~/.claude/.capybaraa-active`). It is small on purpose, about 500 tokens, so the always-on cost stays near zero.
 
 It is ponytail's lean ladder:
 
@@ -181,12 +178,3 @@ Capybaraa owes a real debt to [**ponytail**](https://github.com/DietrichGebert/p
 ## License
 
 [MIT](LICENSE).
-
-## Star History
-
-<a href="https://star-history.com/#katipally/capybaraa&Date">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="https://api.star-history.com/svg?repos=katipally/capybaraa&type=Date&theme=dark">
-    <img src="https://api.star-history.com/svg?repos=katipally/capybaraa&type=Date" width="600" alt="Star history chart for katipally/capybaraa">
-  </picture>
-</a>

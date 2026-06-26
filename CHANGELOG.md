@@ -3,13 +3,13 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com).
 
-## [Unreleased]
+## [0.4.3] - 2026-06-26
 
 - **The ruleset is now lean, and so are the numbers.** The injected core was ~1,500 tokens of
   seven-pillar prose plus a badge-and-sign-off ceremony every turn, which made capybaraa tie a
   bare agent on output tokens and cost ~16% more. Rewrote it to ponytail size: the lean ladder
   plus five habits (ASK with an ASCII sketch, OPTIMAL, TERSE, CLEAN, SYNC), a safety floor, a
-  one-glyph `🦫` badge, **no sign-off and no done-gate** (~440 tokens, a 70% cut). Capybaraa now
+  one-glyph `🦫` badge, **no sign-off and no done-gate** (~500 tokens, a two-thirds cut). Capybaraa now
   spends **~10% fewer output tokens** and writes **~30% less code** than the bare agent, fully
   complete (3/3); cost is +5%, the small plugin tax even ponytail pays. Writeup:
   `benchmarks/results/2026-06-26-sonnet-lean.md`.
