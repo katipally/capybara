@@ -1,10 +1,11 @@
 ---
 name: capybaraa-audit
 description: >
-  Scan the whole repository against capybaraa's six pillars: clarify, lean, optimal,
-  economy, complete, hygiene. A ranked, codebase-wide report of over-engineering, dead
-  code, bad complexity, filler, unfinished work, and missing validation. One line per
-  finding, biggest impact first, lists only, does not apply fixes.
+  Scan the whole repository against capybaraa's seven pillars: clarify, lean, optimal,
+  economy, complete, hygiene, sync. A ranked, codebase-wide report of over-engineering,
+  dead code, bad complexity, filler, unfinished work, missing validation, and docs/tests
+  out of sync with the code. One line per finding, biggest impact first, lists only, does
+  not apply fixes.
   Use when the user says "audit this repo against the pillars", "capybaraa audit",
   "/capybaraa-audit", "what can I delete from this repo", or "find the bloat".
 license: MIT
@@ -12,7 +13,7 @@ license: MIT
 
 # Capybaraa Audit
 
-Scan the entire repository against the six pillars and report what a calm senior dev
+Scan the entire repository against the seven pillars and report what a calm senior dev
 would cut or fix. This is the whole-repo counterpart to `/capybaraa-review` (which only
 looks at the current diff). It is a quality pass, not a correctness audit, and not a
 security audit: for runtime bugs use `/code-review`, for exploits use `/security-review`.
@@ -46,6 +47,9 @@ Detailed guidance on each pillar: `references/principles.md`.
   with no test anywhere near it. Name the missing check or the real fix.
 - `hygiene:` dead code, an orphaned old version left beside its replacement, a stale
   comment, or an unsanitized input at a trust boundary. Name what to remove or guard.
+- `sync:` a doc, README, comment, test, or version string that describes a shape the code
+  no longer has: a renamed symbol, a removed flag, a lagging version. Name what to update
+  or delete so the repo stops lying about itself.
 
 ## Output shape
 
@@ -55,6 +59,7 @@ src/util/dates.js:1: lean: moment imported for one format() call. Use Intl.DateT
 src/legacy/parseV1.js:1: hygiene: whole module dead since v2 parser landed, no callers. Delete it.
 src/api/handler.js:55: hygiene: req.body.id passed straight into the query, no validation. Guard it at the boundary.
 src/report/build.js:30: optimal: findUser called inside the row loop, O(n^2). Build a Map of users once.
+README.md:12: sync: documents a --verbose flag removed in v3, no longer parsed. Delete the line.
 verdict: delete CacheManager and parseV1, drop moment. That's the bulk of the bloat.
 ```
 

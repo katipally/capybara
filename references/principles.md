@@ -1,6 +1,6 @@
 # Capybaraa principles: detailed guidance
 
-This is the deep layer. The six pillars are injected terse every session; this file
+This is the deep layer. The seven pillars are injected terse every session; this file
 holds the worked examples, the situation-by-situation rules, and the edge cases. Read
 the section for whichever pillar a call is non-obvious. Nothing here overrides the
 terse rule; it explains how to apply it.
@@ -10,7 +10,7 @@ The pillars apply to every kind of work, not just code: a new project (don't
 over-scaffold), an existing codebase (read and reuse before adding), a bug to clear
 (root cause), research, ops, or writing (clarify, be terse, finish).
 
-Two rules that sit above all six:
+Two rules that sit above all seven:
 - Match effort to the task. A one-line ask gets the rules and nothing else. A real
   feature, refactor, or risky change earns the full treatment.
 - Never simplify away input validation at a trust boundary, error handling that
@@ -207,30 +207,17 @@ say so. Leave one runnable check behind: the smallest thing that fails if the lo
 breaks, an assert-based self-check or one small test. No frameworks, no fixtures unless
 asked. Trivial one-liners need no test.
 
-Sync is part of done. A change isn't finished while something still describes the old
-shape. After the edit, find what now disagrees with the code: docs and README, the
-comments and doc-strings on what you touched, tests asserting a renamed symbol or an old
-return shape, sibling callers and re-exports, and version strings or config keys across
-manifests. Update them in the same pass and delete the stale rather than leave it beside
-the new (HYGIENE). When the propagation is large or risky, list what drifted and confirm
-before applying; a one-line obvious update you just make and note. `/capybaraa-sync` runs
-this drift sweep across the whole repo on demand.
-
 Situations:
 - Bug fix: trace to the shared cause, fix there, add the check that would have caught
   it.
 - "It works on my read": that is not done. Run it.
 - Test fails after your change: report the failure honestly, do not claim success.
-- Renamed or removed something: grep its name across docs, tests, and config, fix or
-  delete every reference before you call it done. A README that still names the old
-  symbol is the same lie as a stale comment.
 
 | Do | Don't |
 |----|-------|
 | Fix the root cause | Patch the one symptom |
 | Run the check, report real result | Claim done from a read |
 | Leave one runnable check | Ship a parser with no test |
-| Sync the docs/tests/refs you broke | Leave the README naming the old shape |
 | Link a deferred TODO to an issue | Leave a bare TODO in the code |
 
 ---
@@ -272,3 +259,54 @@ Situations:
 | Remove stale comments you touch | Let a comment lie |
 | Validate at the trust boundary | Trust user/network/file input |
 | Surface out-of-scope finds, ask | Silently auto-fix or auto-expand |
+
+---
+
+## SYNC
+
+A change isn't done until everything that described the old shape catches up. HYGIENE
+keeps the file you touched clean; SYNC keeps the rest of the repo honest about it.
+
+When you rename, move, remove, or reshape something, it ripples. The code compiles, but
+the README still names the old symbol, a test still asserts the old return shape, a sibling
+caller still imports the deleted export, the version string in one manifest still lags. A
+codebase that lies about itself is the slow rot this pillar prevents.
+
+After the edit, grep the thing you changed across the repo and reconcile every hit. Look
+for drift in:
+- **docs**: README, CHANGELOG, `references/`, skill descriptions, help cards
+- **comments and doc-strings** on what you touched
+- **tests** asserting a renamed symbol, an old return shape, a dropped flag
+- **sibling code**: other callers, re-exports, type defs built on the old shape
+- **config and metadata**: version strings across manifests, env-var names, keywords
+
+Update the live references in the same pass and delete the stale ones, don't leave them
+beside the new. When the propagation is large or risky (a rename touching dozens of files,
+a public API), list what drifted and confirm before applying. A one-line obvious update you
+just make and note.
+
+Confirm vs. just-do-it: an in-scope propagation of a change you were asked to make is in
+scope, do it. The confirm is for breadth and risk, not for permission to keep your own
+work coherent. `/capybaraa-sync` runs this sweep across the whole repo on demand.
+
+Worked example. You rename `getLevel()` to `getState()`:
+
+```
+   getState()  <- renamed
+   ├─ hooks/*.js        4 callers   -> update
+   ├─ test/smoke.js     2 asserts   -> update
+   ├─ README.md         1 mention   -> update
+   └─ getLevel doc      stale        -> delete
+   net: a change isn't done with the old name still in 7 places.
+```
+
+Edge cases: a rename that a tool can do safely (IDE refactor, codemod), still grep after,
+tools miss strings in markdown and comments. A reference you are unsure is stale, do not
+guess-delete, flag it. Generated files and lockfiles re-derive themselves, leave them.
+
+| Do | Don't |
+|----|-------|
+| Grep the changed name, fix every hit | Trust that the code compiling means it's done |
+| Update docs/tests/versions in the same pass | Ship code that contradicts its README |
+| Delete the stale reference | Leave the old name beside the new |
+| Confirm before a large/risky propagation | Ask permission to keep your own work coherent |

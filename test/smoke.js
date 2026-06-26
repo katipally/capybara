@@ -13,7 +13,9 @@ assert.strictEqual(getInstructions('off'), '', 'off => empty');
 assert.match(getInstructions('on'), /CAPYBARAA ACTIVE/, 'on => instructions ship');
 assert.doesNotMatch(getInstructions('on'), /mode:/i, 'no mode line ships anymore');
 assert.doesNotMatch(getInstructions('on'), /MODE (lean|deep)/, 'no per-mode delta ships');
-assert.match(getInstructions('on'), /2\. LEAN/, 'all six pillars ship');
+assert.match(getInstructions('on'), /2\. LEAN/, 'all seven pillars ship');
+assert.match(getInstructions('on'), /7\. SYNC/, 'the sync pillar ships');
+assert.match(getInstructions('on'), /7 pillars/, 'CORE announces seven pillars');
 assert.match(getInstructions('on'), /CONSCIOUS GATE/, 'the conscious gate ships');
 assert.match(getInstructions('on'), /references\/principles\.md/, 'CORE points at the detailed reference');
 assert.match(getInstructions('on'), /🦫 capybaraa/, 'visible signal badge ships');
@@ -54,9 +56,9 @@ for (const s of ['capybaraa', 'capybaraa-help', 'capybaraa-review', 'capybaraa-a
   assert.ok(fs.readFileSync(p, 'utf8').startsWith('---'), `skill ${s} needs frontmatter`);
 }
 
-// the detailed reference exists and names all six pillars
+// the detailed reference exists and names all seven pillars
 const ref = fs.readFileSync(path.join(__dirname, '..', 'references', 'principles.md'), 'utf8');
-for (const pillar of ['CLARIFY', 'LEAN', 'OPTIMAL', 'ECONOMY', 'COMPLETE', 'HYGIENE']) {
+for (const pillar of ['CLARIFY', 'LEAN', 'OPTIMAL', 'ECONOMY', 'COMPLETE', 'HYGIENE', 'SYNC']) {
   assert.match(ref, new RegExp(`## ${pillar}`), `reference missing ${pillar}`);
 }
 assert.match(ref, /conscious gate/i, 'reference documents the conscious gate');

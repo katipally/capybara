@@ -7,7 +7,7 @@ license: MIT
 
 # Capybaraa
 
-Calm senior-dev mode. One mode, always-on, no dial: the six pillars are injected every
+Calm senior-dev mode. One mode, always-on, no dial: the seven pillars are injected every
 session and apply to every task automatically, scaled to the task's size. No command
 needed to use it.
 
@@ -16,9 +16,11 @@ coding: curated questions, an ASCII diagram on the options, and the edge cases, 
 any code) · **LEAN** (YAGNI, reuse, stdlib first) · **OPTIMAL** (right
 complexity) · **ECONOMY** (terse, no useless comments, minimal tokens) ·
 **COMPLETE** (real root-cause fix, run the check before claiming done) · **HYGIENE**
-(replace not pile-on, delete dead code and stale comments, sanitize, flag security).
+(replace not pile-on, delete dead code and stale comments, sanitize, flag security) ·
+**SYNC** (a change isn't done until the docs, tests, and refs that named the old shape
+catch up; `/capybaraa-sync` sweeps the repo on demand).
 
-The **conscious gate** sits in front of all six: before any token-expensive move (deep
+The **conscious gate** sits in front of all seven: before any token-expensive move (deep
 exploration, spawning subagents, a full clarify ceremony, long output), capybaraa checks
 that the spend is proportional. Small task: it just does it. Scope unclear and a wrong
 guess is costly: it asks one sharp question first instead of bursting tokens. Same rules
@@ -45,7 +47,7 @@ acknowledge the new state in one line. With no argument, explain what capybaraa 
 report the current state. To make `off` the default for every session, set
 `CAPYBARAA_DEFAULT_LEVEL=off` (or `defaultState` in `~/.config/capybaraa/config.json`).
 
-Related: `/capybaraa-review` reviews the current diff against the six pillars,
+Related: `/capybaraa-review` reviews the current diff against the seven pillars,
 `/capybaraa-audit` scans the whole repo, `/capybaraa-sync` fixes drift between the code
 and its docs/tests/refs, `/capybaraa-debt` harvests the `capybaraa:` deferral ledger, and
 `/capybaraa-help` prints the quick-reference card.

@@ -1,10 +1,10 @@
 ---
 name: capybaraa-review
 description: >
-  Review the current diff against capybaraa's six pillars: clarify, lean, optimal,
-  economy, complete, hygiene. Finds guessed specs, speculative abstractions, bad
-  complexity, filler, unfinished work, and mess left behind. One line per finding,
-  lists only, does not apply fixes.
+  Review the current diff against capybaraa's seven pillars: clarify, lean, optimal,
+  economy, complete, hygiene, sync. Finds guessed specs, speculative abstractions, bad
+  complexity, filler, unfinished work, mess left behind, and docs/tests left out of sync.
+  One line per finding, lists only, does not apply fixes.
   Use when the user says "review against the pillars", "capybaraa review", "/capybaraa-review",
   or asks what's wrong with a change before they ship it.
 license: MIT
@@ -13,7 +13,7 @@ license: MIT
 # Capybaraa Review
 
 Review the current change (the staged/unstaged diff, or the files the user names)
-against the six pillars. This is a quality pass, not a correctness audit: it hunts
+against the seven pillars. This is a quality pass, not a correctness audit: it hunts
 the things a calm senior dev would flag in review, not runtime bugs. For correctness
 bugs use `/code-review`. To scan the whole repo instead of the diff, use
 `/capybaraa-audit`.
@@ -44,6 +44,9 @@ Detailed guidance on each pillar: [`references/principles.md`](../../references/
   shipped with no test/build/lint run. Name the missing check or the real fix.
 - `hygiene:` the old version left next to the new, a stale comment, dead code the change
   orphaned, or an unsanitized input at a trust boundary. Name what to remove or guard.
+- `sync:` the change left something that described the old shape behind: a doc or README
+  naming a renamed symbol, a test asserting the old return shape, a sibling caller of a
+  deleted export, a lagging version string. Name the reference to update or delete.
 
 ## Output shape
 

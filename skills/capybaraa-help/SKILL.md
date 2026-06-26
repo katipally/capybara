@@ -1,6 +1,6 @@
 ---
 name: capybaraa-help
-description: Quick reference for capybaraa, what it does, the six pillars, the conscious gate, and how to turn it on or off. Use when the user types /capybaraa-help or asks how capybaraa works.
+description: Quick reference for capybaraa, what it does, the seven pillars, the conscious gate, and how to turn it on or off. Use when the user types /capybaraa-help or asks how capybaraa works.
 disable-model-invocation: true
 license: MIT
 ---
@@ -11,7 +11,7 @@ Render this card, change nothing.
 
 ```
  capybaraa: calm senior-dev mode. one mode, always on, scaled to the task.
- the six pillars apply to every task. no command needed.
+ the seven pillars apply to every task. no command needed.
 
  GATE     conscious gate: before any token-expensive move (deep exploration,
           subagents, full clarify, long output) check the spend is proportional.
@@ -25,6 +25,8 @@ Render this card, change nothing.
           COMPLETE root-cause fix · run the check before claiming done
           HYGIENE  replace not pile-on · kill dead code/stale comments ·
                    sanitize · flag security · mark deferrals with capybaraa:
+          SYNC     after a change, update the docs/tests/refs/versions that
+                   named the old shape · delete stale · /capybaraa-sync sweeps
 
  SLASH    /capybaraa [on|off]                turn it on or off
           /capybaraa-review                  review the diff against the pillars

@@ -3,6 +3,22 @@
 All notable changes to this project are documented here.
 Format loosely follows [Keep a Changelog](https://keepachangelog.com).
 
+## [0.3.1] - 2026-06-25
+
+- **SYNC is now the seventh pillar.** Keeping the docs, tests, comments, sibling code, and
+  version strings in step with a change is promoted from a clause inside COMPLETE to a
+  first-class pillar with its own `references/principles.md` section, review/audit `sync:`
+  tag, and help-card row. "Six pillars" is now "seven pillars" everywhere. `/capybaraa-sync`
+  (added in 0.3.0) is the on-demand sweep for it.
+- **Benchmark graphs refreshed.** Removed the two stale Haiku SVGs
+  (`benchmark-multiarm.svg`, `benchmark-gates.svg`) that showed the old two-mode build, and
+  replaced them with one accurate chart (`benchmark-loc.svg`) built from the current
+  single-mode Sonnet 4.6 run. The README "does it help" section is reworked to lead with
+  current numbers; the earlier five-arm findings are kept as text, honestly labelled.
+- **Consistency pass.** Audited and aligned every place the pillars and rules are stated
+  (CORE, references, README, all skills, help card, manifests, tests) so they tell one
+  consistent story.
+
 ## [0.3.0] - 2026-06-25
 
 - **One mode, no dial.** `lean`/`deep` are gone. Capybaraa is now a single always-on

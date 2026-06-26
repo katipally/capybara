@@ -1,6 +1,6 @@
 {
   "name": "capybaraa",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "private": true,
   "description": "Calm senior-dev mode for Claude Code: one always-on mode that clarifies before code (curated ASCII questions and edge cases), stays lean, optimal, terse, spends tokens consciously, finishes terminally, leaves the repo clean. A visible badge so you always know it is on.",
   "scripts": {

@@ -42,12 +42,13 @@ With capybaraa it clarifies before it writes code:
 
 Then it writes the smallest thing that answers your actual answers, and runs the check before it says it's done.
 
-## The six pillars
+## The seven pillars
 
 > **The capybaraa way:** understand the prompt, gather real context, learn the
 > codebase, explore the actual flow. For anything past a trivial ask, clarify
 > before coding: ask the curated questions you need (ASCII on the options), then
-> write the real root-cause fix. Never patchwork.
+> write the real root-cause fix. Never patchwork. When you're done, leave the docs
+> and tests as honest about the code as the code itself.
 
 | Pillar | What it enforces |
 |--------|------------------|
@@ -56,9 +57,12 @@ Then it writes the smallest thing that answers your actual answers, and runs the
 | **OPTIMAL** | Right data structure, best feasible time and space, no needless O(n²). |
 | **ECONOMY** | Terse output, no useless comments or filler, minimal tokens, no over-exploring. |
 | **COMPLETE** | Finish terminally, root cause not symptom, and run the check before claiming done. |
-| **HYGIENE** | Refactor means replace, not pile-on. Delete dead code and stale comments, sanitize inputs, flag security. Out-of-scope finds get surfaced, not silently changed. |
+| **HYGIENE** | Refactor means replace, not pile-on. Delete dead code and stale comments, sanitize inputs, mark deliberate simplifications with a `capybaraa:` note, flag security. Out-of-scope finds get surfaced, not silently changed. |
+| **SYNC** | A change isn't done until everything that named the old shape catches up: docs, README, comments, tests, sibling callers, version strings. Update them in the same pass and delete the stale; `/capybaraa-sync` sweeps the whole repo on demand. |
 
-The point was never "fewest tokens." It's: do exactly what the task needs, understand it first, and never cut validation, error handling, security, or accessibility. The code ends up small because it's necessary, not golfed.
+Above all seven sits the **conscious gate**: before any token-expensive move, capybaraa checks the spend is proportional to the ask — small task, just do it; scope unclear and a wrong guess is costly, ask one question first.
+
+The point was never "fewest tokens." It's: do exactly what the task needs, understand it first, keep the repo honest about itself, and never cut validation, error handling, security, or accessibility. The code ends up small because it's necessary, not golfed.
 
 ## How it works
 
@@ -67,7 +71,7 @@ One source of truth, [`principles/build-instructions.js`](principles/build-instr
 There's one mode and it has everything. No `lean`/`deep` dial to pick: the depth adapts to the task on its own, governed by the **conscious gate**:
 
 ```
- ALWAYS-ON  the 6 pillars as terse rules. prompt-cached, ~free per turn.
+ ALWAYS-ON  the 7 pillars as terse rules. prompt-cached, ~free per turn.
  GATE       before any token-expensive move (deep exploration, subagents,
             a full clarify ceremony, long output) check the spend is
             proportional. small task -> just do it, no ceremony, no burst.
@@ -96,7 +100,11 @@ If you do not see the 🦫 badge, capybaraa is off (or the session predates inst
 
 The honest answer: capybaraa's value is behavioral, so it shows up in a real agent session, not a one-shot line count. The [agentic benchmark](benchmarks/agentic/) runs actual headless Claude Code sessions on seeded workspaces and scores each arm on the pillar it targets.
 
-**Current single-mode run (0.3.0, Sonnet 4.6, n=2, [writeup](benchmarks/results/2026-06-25-sonnet-0.3.0.md)).** Three tasks, median lines of code (lower is leaner); every arm stayed 100% correct, safe, and gate-passing:
+**Current single-mode run (Sonnet 4.6, n=2, [writeup](benchmarks/results/2026-06-25-sonnet-0.3.0.md)).** Three tasks, three arms, median lines of code (lower is leaner). Every arm stayed 100% correct, safe, and gate-passing:
+
+<p align="center">
+  <img src="assets/benchmark-loc.svg" width="720" alt="Grouped bar chart, median lines of code per task (lower is leaner) for three arms on Sonnet 4.6, n=2. lean-native: baseline 1, capybaraa 1, ponytail 1 (irreducible, all tie). hygiene-replace: baseline 23.5, capybaraa 16.0, ponytail 9.0. feat-rating: baseline 46.0, capybaraa 25.5, ponytail 17.5. capybaraa is leaner than baseline on both reducible tasks; ponytail is leaner still.">
+</p>
 
 ```
  TASK (lower = leaner)   baseline   capybaraa   ponytail
@@ -107,27 +115,7 @@ The honest answer: capybaraa's value is behavioral, so it shows up in a real age
 
 The straight read: **capybaraa cuts over-build 32–45% against the bare baseline without dropping correctness, safety, or hygiene — but ponytail is leaner still on raw line count**, and capybaraa costs a little more time and money (the price of clarifying and checking). These three tasks are pure LOC, which is ponytail's home turf; capybaraa's pitch is leanness *without* cutting safety or completeness, plus the clarify-first behavior these LOC gates don't measure. n=2, one model, treat as directional.
 
-An earlier, broader five-arm run (Haiku 4.5, n=3, [full writeup](benchmarks/results/2026-06-25-multiarm-haiku.md)) adds the clarify and tests-written dimensions, against the old two-mode build: capybaraa vs the bare baseline, ponytail, caveman, and a "follow YAGNI, prefer one-liners" arm.
-
-<p align="center">
-  <img src="assets/benchmark-multiarm.svg" width="820" alt="Two panels across five arms (baseline, capybaraa, ponytail, caveman, yagni-oneliner) on Haiku 4.5. Left: lines of code on the two over-build tasks (star rating: 60/53/40/48/27; color palette: 154/135/86/143/47); yagni-oneliner is leanest, ponytail next, capybaraa moderate, caveman and baseline bulkiest. Right: CLARIFY judge score 0-3; capybaraa 2.0 and ponytail 2.0 ask first, baseline 1.5, caveman 1.0, yagni-oneliner 0.0.">
-</p>
-
-There's a real tradeoff, not a single winner. **yagni-oneliner cuts the most lines, but clarifies the least (0.0/3)**: it silently assumed the spec and shipped. Capybaraa sits with ponytail in the "ask first" cluster (both 2.0), cuts moderately, and is the only arm that writes tests.
-
-<p align="center">
-  <img src="assets/benchmark-gates.svg" width="820" alt="Gate scoreboard across the five arms on Haiku 4.5. CLARIFY (as a percent of 3): baseline 50%, capybaraa 67%, ponytail 67%, caveman 33%, yagni-oneliner 0%. Tests written: only capybaraa (~50% of runs), every other arm 0%. Safety against adversarial input: all five arms 100%.">
-</p>
-
-```
- CLARIFY (judge 0-3)   capybaraa 2.0 = ponytail 2.0  >  baseline 1.5  >  caveman 1.0  >  yagni 0.0
- LEAN  (over-build)    yagni < ponytail < capybaraa ≈ caveman ≈ baseline (capybaraa leaner than baseline)
- TESTS WRITTEN         capybaraa only (33-67% of runs); every other arm 0%. its COMPLETE pillar
- SAFETY / COMPLETE     100% safe and 3/3 complete across every arm; nobody won LOC by shipping a stub
- COST                  capybaraa is the most expensive: the price of asking, testing, and checking more
-```
-
-The point isn't "fewest lines." It's that capybaraa clarifies more, builds leaner than the baseline without shipping a stub, writes the tests nobody else does, and stays safe. Every gate ships a good/bad reference and is validated before any API spend; the judges are auditable (fixed model, published rubric, self-validated). One model, n=3, small suite, so treat the LOC numbers as directional. Methodology, isolation, and caveats (including capybaraa's variance on Haiku) are in the [writeup](benchmarks/results/2026-06-25-multiarm-haiku.md) and [`benchmarks/agentic/README.md`](benchmarks/agentic/README.md). An earlier Sonnet 4.6 run is [here](benchmarks/results/2026-06-25-agentic-sonnet.md).
+An earlier, broader **five-arm run** (Haiku 4.5, n=3, against the older two-mode build — [full writeup](benchmarks/results/2026-06-25-multiarm-haiku.md)) added the dimensions LOC can't see: on a 0–3 CLARIFY judge, capybaraa and ponytail tied at 2.0 (both ask first) ahead of baseline 1.5 and a yagni-oneliner arm at 0.0 that silently assumed the spec; capybaraa was the only arm that wrote tests (33–67% of runs, every other arm 0%); all arms stayed 100% safe against adversarial input. Every gate ships a good/bad reference validated before any API spend, and the judges are auditable (fixed model, published rubric). An older single-shot Sonnet 4.6 run is [here](benchmarks/results/2026-06-25-agentic-sonnet.md).
 
 Run it yourself (needs the `claude` CLI and Python 3):
 
@@ -164,13 +152,13 @@ It never cuts validation, security, error handling, or accessibility, whatever t
 
 ## Commands
 
-The six pillars are always on, there's no command to run them. Once installed, capybaraa applies to every task automatically. The slash commands are just for the mode, review, and help:
+The seven pillars are always on, there's no command to run them. Once installed, capybaraa applies to every task automatically. The slash commands are just for on/off, review, sync, debt, and help:
 
 | Command | What it does |
 |---------|--------------|
 | `/capybaraa [on \| off]` | Turn it on or off. No argument explains it and shows the current state. |
-| `/capybaraa-review` | Review the current diff against the six pillars. Lists findings, doesn't edit. |
-| `/capybaraa-audit` | Scan the whole repo against the six pillars. Ranked findings, doesn't edit. |
+| `/capybaraa-review` | Review the current diff against the seven pillars. Lists findings, doesn't edit. |
+| `/capybaraa-audit` | Scan the whole repo against the seven pillars. Ranked findings, doesn't edit. |
 | `/capybaraa-sync` | Fix drift between the code and its docs/tests/refs after a change. Lists, confirms, then updates and deletes stale. |
 | `/capybaraa-debt` | Harvest the `capybaraa:` deferral ledger (intentional simplifications). Lists, doesn't edit. |
 | `/capybaraa-help` | Quick reference card. |
