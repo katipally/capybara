@@ -22,11 +22,11 @@ It's the half of "good engineering" that agents skip: think before you type, the
 
 ## Before and after
 
-The ticket: "add a settings page."
+The ticket: "add user settings persistence."
 
-**A stock agent** guesses what you meant and starts typing. It invents a `SettingsManager`, a `ConfigProvider`, three new files, and a migration, before it knows which settings you even want. Most of that is scaffolding for things you never asked for, and you only find out it guessed the spec wrong once it's all written.
+Claude can already ask good questions here, that's what plan mode is for. But in a plain run it tends to guess the whole spec and build it. In our benchmark the bare agent did exactly that: handed this ticket, it invented theme, font size, six languages, and notification toggles, wrote ~238 lines, and reported "done", none of them the settings you'd actually have chosen.
 
-**Capybaraa** stops and asks the two questions that actually decide the design, with the choices drawn so the tradeoff is obvious at a glance:
+**Capybaraa makes asking-first the default**, even outside plan mode, and sharpens it: it goes straight to the few questions that actually decide the design and draws the choices so the tradeoff is obvious at a glance:
 
 ```
 🦫 two questions before I touch code:
@@ -42,7 +42,7 @@ The ticket: "add a settings page."
    edge cases I'll handle: no-JS fallback, unknown saved value, first load.
 ```
 
-Then it builds the smallest thing that fits your answers, runs the check, and stops. No `SettingsManager`, no files you didn't need, nothing left half-done.
+Then it builds the smallest thing that fits your answers, runs the check, and stops. No invented spec, no files you didn't need, nothing left half-done.
 
 That is the whole pitch: **ask first, build only what the answer needs, prove it works, leave it clean.** The rest of this README is how it does that, and the numbers that show it.
 
@@ -56,7 +56,7 @@ That is the whole pitch: **ask first, build only what the answer needs, prove it
 
 | Pillar | What it enforces |
 |--------|------------------|
-| **CLARIFY** | Understand and explore first, then ask what's left: as many curated questions as the task actually needs (one or a dozen, never a fixed quota). Any question with a shaped choice carries a small ASCII sketch on the options - near-mandatory, skipped only for a pure yes/no - plus explicit edge cases. Don't guess the spec. |
+| **CLARIFY** | Claude already asks (that's what plan mode is for); this turns it up. Clarify more often (not just in plan mode), go deeper on the few questions that actually decide the build and explain each, and draw a small ASCII sketch on any shaped choice (skipped only for a pure yes/no). Don't guess the spec. |
 | **LEAN** | The YAGNI ladder: does it need to exist? reuse what's here? stdlib? native? one line? then minimal code. |
 | **OPTIMAL** | Right data structure, best feasible time and space, no needless O(n^2). |
 | **ECONOMY** | Terse output, no useless comments or filler, minimal tokens, no over-exploring. |
@@ -107,10 +107,10 @@ Yes, and we measured it instead of asserting it. The [agentic benchmark](benchma
 **Sonnet 4.6, 3 runs per cell.** Three things came out of it:
 
 <p align="center">
-  <img src="assets/benchmark.svg" width="720" alt="Two charts. Top: median lines of code per task, baseline vs capybaraa, lower is leaner. Star rating 38 vs 23 (-39%), CSV export 20 vs 15 (-25%), Cmd-K palette 89 vs 78 (-12%), rewrite CSV parser 17 vs 16 (-6%), fix failing test 4 vs 2 (-50%); every one scored fully complete 3 of 3. Bottom: CLARIFY judge 0 to 3, baseline 0 of 3, capybaraa 1.5 of 3; baseline built on assumptions including a 238-line SettingsManager while capybaraa wrote 0 lines and asked first; the 9 deterministic gates are 100% for both.">
+  <img src="assets/benchmark.svg" width="720" alt="Two charts. Top: median lines of code per task, baseline vs capybaraa, lower is leaner. Star rating 38 vs 23 (-39%), CSV export 20 vs 15 (-25%), Cmd-K palette 89 vs 78 (-12%), rewrite CSV parser 17 vs 16 (-6%), fix failing test 4 vs 2 (-50%); every one scored fully complete 3 of 3. Bottom: CLARIFY judge 0 to 3, baseline 0 of 3, capybaraa 1.5 of 3; baseline invented the spec and built about 238 lines unprompted while capybaraa wrote 0 lines and asked first; the 9 deterministic gates are 100% for both.">
 </p>
 
-**1. It asks before it builds.** Handed an underspecified ticket ("add user settings persistence to this app"), the bare agent dove straight into code on its own guesses, in one run writing a **238-line `SettingsManager`** for a spec nobody had pinned down. Capybaraa wrote **zero lines and asked the questions first**. On the CLARIFY judge (0-3, graded by a separate model with no plugin loaded) capybaraa scored **1.5 vs the baseline's 0**.
+**1. It asks more often.** This is a plain non-interactive run (`claude -p`, no plan mode), so it shows what each agent does *by default*. Handed an underspecified ticket ("add user settings persistence to this app"), the bare agent guessed the whole spec and built it, in one run **inventing theme, font size, six languages, and notification toggles and writing ~238 lines** nobody had asked for. Capybaraa wrote **zero lines and asked the questions first**. On the CLARIFY judge (0-3, graded by a separate model with no plugin loaded) capybaraa scored **1.5 vs the baseline's 0**. The agent can already clarify in plan mode; capybaraa is what makes it do so by default.
 
 **2. It builds the same feature with less code.** On five tasks where there was real room to be leaner, capybaraa was **6-50% smaller** (a star-rating widget: 23 lines vs 38). Crucially, the completeness judge scored **every one fully complete, 3/3, for both arms**, so this is leaner, not less. It does cost a little more time and money per task, the price of asking and running the check.
 
@@ -191,6 +191,10 @@ No. `CAPYBARAA_DEFAULT_LEVEL` or `~/.config/capybaraa/config.json` can set wheth
 
 **Why a capybaraa?**
 Calmest animal alive, gets along with everything, wastes zero energy. You already knew.
+
+## Credit
+
+Capybaraa owes a real debt to [**ponytail**](https://github.com/DietrichGebert/ponytail) by [Dietrich Gebert](https://github.com/DietrichGebert). The lazy-senior-dev idea, the LEAN ladder (does it need to exist, reuse, stdlib, native, one line), the always-on-via-hooks design, the `capybaraa:` deferral marker (ponytail's `ponytail:`), the review/audit command family, and the before/after-then-numbers shape of this README all trace back to it. Ponytail is tight and focused on staying lean; capybaraa takes that DNA and builds outward into a seven-pillar workflow (clarify, optimal, economy, complete, and sync layered on top of lean). If you want the pure, ruthless leanness version, or just want to thank the original, [go star ponytail](https://github.com/DietrichGebert/ponytail).
 
 ## License
 

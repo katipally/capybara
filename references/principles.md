@@ -37,6 +37,13 @@ waste": one capable mode, spent consciously.
 
 ## CLARIFY
 
+You already clarify some on your own (plan mode is built for it, and you'll ask when a
+detail is plainly missing). This pillar does not add a missing ability; it improves the
+one you have, on three axes: **frequency** (clarify more readily, and not only when you
+happen to be in plan mode), **depth** (go past surface questions to the few that actually
+decide the build, and explain each so the user can answer well), and **clarity** (draw an
+ASCII sketch on the options). Same instinct you already have, turned up and made concrete.
+
 Understand before you act, then ask only what your exploration could not answer.
 
 The order is fixed: read the prompt, gather real context, learn the codebase, trace

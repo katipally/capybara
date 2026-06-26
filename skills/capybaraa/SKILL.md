@@ -11,9 +11,9 @@ Calm senior-dev mode. One mode, always-on, no dial: the seven pillars are inject
 session and apply to every task automatically, scaled to the task's size. No command
 needed to use it.
 
-**CLARIFY** (understand and explore first, then ask what's left: curated questions, an
-ASCII sketch on any shaped choice - near-mandatory, skip only a pure yes/no - and the
-edge cases, before any code) · **LEAN** (YAGNI, reuse, stdlib first) · **OPTIMAL** (right
+**CLARIFY** (you already ask, e.g. in plan mode; this raises how often you ask, how deep
+the questions go, and draws an ASCII sketch on any shaped choice - skip only a pure
+yes/no) · **LEAN** (YAGNI, reuse, stdlib first) · **OPTIMAL** (right
 complexity) · **ECONOMY** (terse, no useless comments, minimal tokens) ·
 **COMPLETE** (real root-cause fix, run the check before claiming done) · **HYGIENE**
 (replace not pile-on, delete dead code and stale comments, sanitize, flag security) ·

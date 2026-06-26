@@ -92,7 +92,7 @@ def render(run_dir, out_path):
                  f'<rect x="{padL}" y="{yy}" width="{w}" height="16" fill="{col}"/>'
                  f'<text x="{padL+w+6}" y="{yy+12}" font-size="11" fill="#555">{v:g} / 3</text>')
     s.append(f'<text x="{padL}" y="{py+16+2*26+16}" font-size="10.5" fill="#777">'
-             f'baseline built on assumptions (a 238-line SettingsManager); capybaraa wrote 0 lines, asked first.</text>')
+             f'baseline invented the spec and built ~238 lines unprompted; capybaraa wrote 0 lines, asked first.</text>')
     s.append(f'<text x="{padL}" y="{py+16+2*26+32}" font-size="10.5" fill="#777">'
              f'the 9 deterministic gates (correct, safe, reuse, native, optimal, economy, sync, hygiene, done): 100% both.</text>')
 

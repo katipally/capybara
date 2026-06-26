@@ -17,7 +17,7 @@ Render this card, change nothing.
           subagents, full clarify, long output) check the spend is proportional.
           small task -> just do it. scope unclear & costly -> ask ONE question first.
 
- PILLARS  CLARIFY  explore first, then ask what's left: curated questions,
+ PILLARS  CLARIFY  you already ask (plan mode); ask more often + deeper,
                    ASCII on any shaped choice (near-mandatory), edge cases
           LEAN     YAGNI · reuse · stdlib first
           OPTIMAL  right data structure · best feasible complexity
